@@ -30,7 +30,7 @@ Display->Logo();
  pinMode(16,OUTPUT);
 }
 void loop() {
-/*
+
   if (irrecv.decode(&results)) {
     irrecv.resume();  // Receive the next value
   }
@@ -44,6 +44,6 @@ void loop() {
      digitalWrite(16,0);
 
   
-*/
+
 }
 
