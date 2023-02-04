@@ -15,22 +15,22 @@ Wlan* WIFI=new Wlan(&WiFi,Display);
 
 //*****************Global Function *****************
 
-//----------IR-----------
+//----------IR-----------gl:
 const uint16_t IR_RecvPin = 14;
 IRrecv irrecv(IR_RecvPin); // Create an IRrecv object on pin 4
 decode_results results;
 
 
 void setup() {
-  Display->Logo();
-  battery->Charge();
+Display->Logo();
+ battery->Charge();
   Serial.begin(115200);
-  irrecv.enableIRIn(); // Start the IR receiver
+ irrecv.enableIRIn(); // Start the IR receiver
   WIFI->connect();
-  pinMode(16,OUTPUT);
+ pinMode(16,OUTPUT);
 }
 void loop() {
-
+/*
   if (irrecv.decode(&results)) {
     irrecv.resume();  // Receive the next value
   }
@@ -44,6 +44,6 @@ void loop() {
      digitalWrite(16,0);
 
   
-
+*/
 }
 
