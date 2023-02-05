@@ -3,6 +3,7 @@
 Oled* Display =new Oled();
 Battery* battery=new Battery(Display);
 Wlan* WIFI=new Wlan(&WiFi,Display);
+Fota* FOTA=new Fota(Display);
 //*****************Include file *****************
 
 
@@ -22,15 +23,18 @@ decode_results results;
 
 
 void setup() {
-Display->Logo();
- battery->Charge();
+//Display->Logo();
+//battery->Charge();
+  FOTA->begin();
   Serial.begin(115200);
- irrecv.enableIRIn(); // Start the IR receiver
+ //irrecv.enableIRIn(); // Start the IR receiver
   WIFI->connect();
  pinMode(16,OUTPUT);
+ FOTA->dowload_packege();
+
 }
 void loop() {
-
+/*
   if (irrecv.decode(&results)) {
     irrecv.resume();  // Receive the next value
   }
@@ -43,7 +47,7 @@ void loop() {
   }
      digitalWrite(16,0);
 
-  
+*/  
 
 }
 
