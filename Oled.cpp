@@ -40,7 +40,9 @@ void Oled::wifi_connect()
 }
 
 void Oled::wifi_init(ESP8266WiFiClass* wifi)
-{
+{ 
+  this->clearDisplay();
+  this->setCursor(0,0);
   WiFi=wifi;
   this->print("Connecting to :");
   this->print(WiFi->SSID());

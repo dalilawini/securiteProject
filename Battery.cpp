@@ -25,5 +25,6 @@ void Battery::Charge()
     display->drawBitmap(104,0,FullBattery, 24,8, 1);
     display->display();
     delay(500);
+    
 
 }
