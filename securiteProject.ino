@@ -23,14 +23,15 @@ decode_results results;
 
 
 void setup() {
-//Display->Logo();
+Display->Logo();
 //battery->Charge();
   FOTA->begin();
   Serial.begin(115200);
  //irrecv.enableIRIn(); // Start the IR receiver
   WIFI->connect();
  pinMode(16,OUTPUT);
- FOTA->dowload_packege();
+ FOTA->check_for_update();
+ //FOTA->dowload_packege();
 
 }
 void loop() {
