@@ -24,6 +24,35 @@ void Fota::begin()
 
 
 }
+void Fota::check_for_update()
+{
+    std::unique_ptr<BearSSL::WiFiClientSecure>client( new BearSSL::WiFiClientSecure);
+    client->setInsecure();
+    http.begin(*client,HOST_FOR_JSON);
+    
+     int resp= http.GET();
+    if(resp == HTTP_CODE_OK)
+    {  
+     String payload = http.getString();
+     http.end();
+      StaticJsonDocument<512> doc;
+      DeserializationError error = deserializeJson(doc, payload);
+      
+    if (error) {
+    Serial.println("Failed to parse JSON");
+     return ;
+    }
+    FIRMWARE_VERSION = String(doc["firmware_version"]);
+    Serial.println(FIRMWARE_VERSION);
+    if(FIRMWARE_VERSION=="01.01.10");
+     {    http.begin(*client,HOST);
+
+       dowload_packege();   
+     }
+    }
+      else
+        Serial.print("HTTP response ERROR");
+}
 
 void Fota::dowload_packege()
 {   
@@ -33,9 +62,8 @@ void Fota::dowload_packege()
     display->println("FIRMWARE UPDATE START");
     display->println("");
 
-    std::unique_ptr<BearSSL::WiFiClientSecure>client( new BearSSL::WiFiClientSecure);
-    client->setInsecure();
-    http.begin(*client,HOST);
+    //std::unique_ptr<BearSSL::WiFiClientSecure>client( new BearSSL::WiFiClientSecure);
+    //client->setInsecure();
 
     int resp= http.GET();
     if(resp == HTTP_CODE_OK)
