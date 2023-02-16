@@ -43,6 +43,8 @@ typedef struct esp_now_peer_info {
     uint8_t encrypt[6];           /**< ESPNOW peer local master key that is used to encrypt data */
     uint8_t encrypt_len ;
 } esp_now_peer_info_t;
+// callback when data is sent from Master to Slave
+
 
 
 // Global copy of slave
@@ -59,6 +61,7 @@ private:
 
     /* data */
 public:
+
   int SlaveCnt = 0;
 
   esp_now_peer_info_t slaves[NUMSLAVES] = {};
@@ -69,6 +72,14 @@ public:
     void InitESPNow() ;
     void ScanForSlave() ;
     void sendData(uint8_t data) ;
+    void send_cb(esp_now_send_cb_t cp);
+    void send_cb( uint8_t *mac_addr, uint8_t status);
+
+    void configDeviceAP(void);
+    void recv_cb(esp_now_recv_cb_t cp);
+    void recv_cb(u8 *mac_addr, u8 *data, u8 len);
+
+
     uint8_t PRINTSCANRESULTS = 0;
     String SlaveName ="Slave";
 
