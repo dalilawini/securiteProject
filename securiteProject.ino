@@ -1,7 +1,7 @@
-#include "Wlan.h"
 #include "EspNow.h"
-
+#include "Time.h"
 Oled* Display =new Oled();
+Time* time_=new Time(Display);
 Battery* battery=new Battery(Display);
 Wlan* WIFI=new Wlan(&WiFi,Display);
 Fota* FOTA=new Fota(Display);
@@ -32,30 +32,37 @@ void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t data_len) {
   espnow->recv_cb(mac_addr, data,data_len);
 }
 
-
+unsigned long epochTime;
 void setup() {
 Display->Logo();
 //battery->Charge();
  // FOTA->begin();
   Serial.begin(115200);
  //irrecv.enableIRIn(); // Start the IR receiver
- // WIFI->connect();
+ WIFI->connect();
  //FOTA->check_for_update();
  //FOTA->dowload_packege();
  
- espnow->configDeviceAP();
+ //espnow->configDeviceAP(); //slave
  //espnow->ScanForSlave();
- espnow->InitESPNow();
+ //espnow->InitESPNow();//slave
  //espnow->send_cb(OnDataSent);
- espnow->recv_cb(OnDataRecv);
- 
+ //espnow->recv_cb(OnDataRecv);//slave
  pinMode(16,OUTPUT);
+
+ //time_->begin();
+ 
 
 }
 void loop() {
-  //espnow->sendData(41);
- // delay(1000);
+time_->TimeDisplay();
+
+ delay(1000);
+
+
 /*
+  //espnow->sendData(41);
+
   if (irrecv.decode(&results)) {
     irrecv.resume();  // Receive the next value
   }
@@ -68,7 +75,7 @@ void loop() {
   }
      digitalWrite(16,0);
 
-*/  
+*/
 
 }
 
