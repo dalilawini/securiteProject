@@ -9,7 +9,6 @@
 
 bool Wlan::connect()
  { 
-   
   WiFi->mode(WIFI_STA);
   WiFi->begin(ssid, password);
 

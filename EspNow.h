@@ -1,3 +1,6 @@
+#ifndef ESPNOW_H_
+#define ESPNOW_H_
+
 #include <Arduino.h>
 #include <string>
 
@@ -88,3 +91,4 @@ public:
 
 };
 
+#endif 

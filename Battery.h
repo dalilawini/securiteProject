@@ -1,3 +1,6 @@
+#ifndef BATTERY_H_
+#define BATTERY_H_
+
 #include "Oled.h"
 
 class Battery
@@ -39,5 +42,7 @@ public:
     void Charge();
     ~Battery();
 };
+
+#endif 
 
 

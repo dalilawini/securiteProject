@@ -1,3 +1,6 @@
+#ifndef FOTA_H_
+#define FOTA_H_
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
@@ -17,7 +20,6 @@
 
 
  //current size of written firmware
-
 
 
 class Fota
@@ -40,3 +42,6 @@ HTTPClient http;
   int FW_Size;       //total size of firmware
   String FIRMWARE_VERSION;
 };
+
+#endif 
+
