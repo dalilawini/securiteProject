@@ -1,6 +1,7 @@
 #ifndef WLAN_H_
 #define WLAN_H_
 #include "Fota.h"
+#include "tools.h"
 
 
 //#include "Oled.h"
@@ -14,15 +15,24 @@ class Wlan
 {
 
 private:
-    const char* ssid     = "TOPNET_8CD0";
-    const char* password = "7loaqeb4nu";
+     char *ssid ;
+     char *password;
+
+
+
     ESP8266WiFiClass* WiFi;
     Oled* Display ;
 public:
-
+    
     Wlan(ESP8266WiFiClass* Wifi_Instance,Oled* Display_Instance);
-    ~Wlan(); 
+    ~Wlan();
+     
     bool connect();
+    void LoadWifiDesvices();
 
+    char* getSsid();
+    void setSsid(char *ssid);
+    char* getPassword();
+    void setPassword(char *password);
 };
 #endif 

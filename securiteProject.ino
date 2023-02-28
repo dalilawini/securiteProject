@@ -1,4 +1,5 @@
 
+//-------------------------librery -------------------------
 #include "Battery.h"
 #include "EspNow.h"
 #include "Fota.h"
@@ -7,6 +8,7 @@
 #include "Time.h"
 #include "tools.h"
 
+//----------------------class instance ----------------------
 MENU Menu;
 Oled* Display =new Oled();
 Time* time_=new Time(Display);
@@ -14,7 +16,6 @@ Battery* battery=new Battery(Display);
 Wlan* WIFI=new Wlan(&WiFi,Display);
 Fota* FOTA=new Fota(Display);
 EspNow* espnow=new EspNow();
-//*****************Include file *****************
 
 
 //----------IR-----------
@@ -38,12 +39,22 @@ void OnDataSent( uint8_t *mac_addr, uint8_t status) {
 }
 void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t data_len) {
   espnow->recv_cb(mac_addr, data,data_len);
+ /* Serial.print("data: ");
+  Serial.println((char*)data);
+  Serial.print("mac: ");
+  Serial.println((char*)mac_addr);
+  Serial.print("data_len: ");
+  Serial.println(data_len);
+*/
 }
 
 bool click_ok=false;
 uint8_t click_id=0;
 
 void setup() {
+  
+  WIFI->setSsid("dali");
+  WIFI->setPassword("123456789");
   Serial.begin(115200);
 
 
@@ -54,30 +65,26 @@ Display->Logo();
 //battery->Charge();
  // FOTA->begin();
  //irrecv.enableIRIn(); // Start the IR receiver
- WIFI->connect();
+ //WIFI->connect();
  //FOTA->check_for_update();
  //FOTA->dowload_packege();
- 
+
+ //espnow->configDeviceAP(); //for test find mac_id for master
+ //delay(5000);
+   espnow->InitESPNow();
+
+espnow->ScanForSlave();     //master
+espnow->send_cb(OnDataSent);//master
+
  //espnow->configDeviceAP(); //slave
- //espnow->ScanForSlave();
- //espnow->InitESPNow();//slave
- //espnow->send_cb(OnDataSent);
- //espnow->recv_cb(OnDataRecv);//slave
+// espnow->recv_cb(OnDataRecv);//slave
+
  pinMode(16,OUTPUT);
- //time_->TimeDisplay();
-uint8_t scanResults_ = WiFi.scanNetworks(); 
-for(int i=0;i<scanResults_;i++)
-{
-
-Menu.CONNECTION.Wifi[i].DeviceName=WiFi.SSID(i);
-Menu.CONNECTION.Wifi[i].Mac=WiFi.BSSIDstr(i);
-Menu.CONNECTION.Wifi[i].SignalStrength=WiFi.RSSI(i);
-}
-
+/*
 Serial.print("page name:");
 Serial.println(Menu.CONNECTION.PageName);
 
-for(int i=0;i<scanResults_;i++)
+for(int i=0;i<Menu.CONNECTION.AvaibleDevices;i++)
 {
 Serial.print("name: ");
 Serial.println(Menu.CONNECTION.Wifi[i].DeviceName);
@@ -86,10 +93,10 @@ Serial.println(Menu.CONNECTION.Wifi[i].Mac);
 Serial.print("Signal Strength: ");
 Serial.println(Menu.CONNECTION.Wifi[i].SignalStrength);
 }
-
+*/
 }
 void loop() {
- if (!digitalRead(0)) 
+ /*if (!digitalRead(0)) 
     {
       click_id++;
       delay(250);
@@ -100,8 +107,9 @@ void loop() {
   Display->setCursor(0,0);
   Display->setCursor(0,10);
   Display->setTextSize(1);
-
-
+*/
+//time_->update();
+ //time_->TimeDisplay();
 
 
 
@@ -118,11 +126,12 @@ void loop() {
 
   }
 */
-    Display->display();
+   // Display->display();
+espnow->sendData("dali",1);
+delay(1000);
 
 
 /*
-  //espnow->sendData(41);
 
   if (irrecv.decode(&results)) {
     irrecv.resume();  // Receive the next value
