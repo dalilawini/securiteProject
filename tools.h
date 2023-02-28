@@ -32,6 +32,7 @@ int  SignalStrength;
 struct Connection {
 char* PageName ="CONNECTION";
 struct DataWifi Wifi[20];
+uint8_t AvaibleDevices;
 struct DataConnection  AccessPoint;
 };
 
