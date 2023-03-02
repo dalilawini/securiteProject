@@ -10,7 +10,6 @@
 
 
 
-
 class Wlan
 {
 
@@ -23,7 +22,7 @@ private:
     ESP8266WiFiClass* WiFi;
     Oled* Display ;
 public:
-    
+
     Wlan(ESP8266WiFiClass* Wifi_Instance,Oled* Display_Instance);
     ~Wlan();
      

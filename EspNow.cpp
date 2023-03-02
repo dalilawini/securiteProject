@@ -1,7 +1,8 @@
 #include "EspNow.h"
 
-EspNow::EspNow(/* args */)
+EspNow::EspNow(MENU* menu)
 {
+  this->menu=menu;
 }
 
 EspNow::~EspNow()
@@ -159,66 +160,49 @@ void EspNow::manageSlave()
 void EspNow::sendData(char* data,uint8_t id) 
 {
   device.Send.data.type= false;
-  device.Send.data._str= data;
+  device.Send.data.str= data;
   device.Send.data_len= strlen(data);
   device.Send.id= id;
   device.Send.name= this->find_name(id);
   device.Send.mac=this->find_mac(id);
 
-  Serial.print("data: ");
-  Serial.println(device.Send.data._str);
-  Serial.print("data_length: ");
-  Serial.println(device.Send.data_len);
-  Serial.print("id: ");
-  Serial.println(device.Send.id);
-  Serial.print("name: ");
-  Serial.println(device.Send.name);
-  Serial.print("mac :");
- for (int s = 0; s < 6; ++s )
-      {
-        Serial.print(device.Send.mac[s], HEX);
-        if (s != 5) Serial.print(":");
-      }
-  Serial.println("");
-
-
-  esp_now_send( device.Send.mac,(u8*)device.Send.data._str,device.Send.data_len);
+  esp_now_send( device.Send.mac,(u8*)device.Send.data.str,device.Send.data_len);
 }
 
 void EspNow::sendData(uint8_t* data,uint8_t id) 
 {
   device.Send.data.type= true;
-  device.Send.data._U8= data;
+  device.Send.data.U8= data;
   device.Send.data_len= sizeof(data);
   device.Send.id= id;
   device.Send.name= this->find_name(id);
   device.Send.mac=this->find_mac(id);
         
-  esp_now_send( device.Send.mac,(u8*)device.Send.data._str,device.Send.data_len);
+  esp_now_send( device.Send.mac,device.Send.data.U8,device.Send.data_len);
 }
 
 void EspNow::sendData(char* data,String name) 
 {
   device.Send.data.type= false;
-  device.Send.data._str= data;
+  device.Send.data.str= data;
   device.Send.data_len= strlen(data);
   device.Send.id= this->find_id(name);
   device.Send.name= name;
   device.Send.mac=this->find_mac(device.Send.id);
         
-  esp_now_send( device.Send.mac,(u8*)device.Send.data._str,device.Send.data_len);
+  esp_now_send( device.Send.mac,(u8*)device.Send.data.str,device.Send.data_len);
 }
 
 void EspNow::sendData(uint8_t* data,String name) 
 {
   device.Send.data.type= true;
-  device.Send.data._U8= data;
+  device.Send.data.U8= data;
   device.Send.data_len= sizeof(data);
   device.Send.id= this->find_id(name);
   device.Send.name= name;
   device.Send.mac=this->find_mac(device.Send.id);
         
-  esp_now_send( device.Send.mac,(u8*)device.Send.data._str,device.Send.data_len);
+  esp_now_send( device.Send.mac,device.Send.data.U8,device.Send.data_len);
 }
 
 //-------------------------Send CallBack------------------------
@@ -229,8 +213,21 @@ void EspNow::send_cb(esp_now_send_cb_t cp) {
 void EspNow::send_cb( uint8_t *mac_addr, uint8_t status){
 
   uint8_t id =this->find_id(mac_addr);
-  Serial.print("Last Packet Send from id: "); Serial.println( device.Recive.id);
+  Serial.print("Last Packet Send from id: "); Serial.println( id);
   Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  //----------------for SENDED data----------------
+   if(device.Recive.data.type==false)
+   {
+    menu->ESP_NOW.P_Device[device.Recive.id].Send.str = device.Send.data.str; 
+    menu->ESP_NOW.P_Device[device.Recive.id].Send.U8 = 0;
+   } 
+  else
+   {
+    menu->ESP_NOW.P_Device[device.Recive.id].Send.U8= device.Send.data.U8;
+    menu->ESP_NOW.P_Device[device.Recive.id].Send.str= NULL;
+   }  
+     menu->ESP_NOW.P_Device[device.Recive.id].Send.len= device.Send.data_len;
+
 }
 
 //-------------------------Recived CallBack------------------------
@@ -239,18 +236,33 @@ void EspNow::recv_cb(esp_now_recv_cb_t cp) {
 }
 
 void EspNow::recv_cb(uint8_t *mac_addr, uint8_t *data, uint8_t data_len){
-
-  device.Recive.data.type= true;
-  device.Recive.data._U8=data;
+ 
+  device.Recive.data.type= false;
+  device.Recive.data.str=(char*)data;
   device.Recive.data_len= data_len;
-  device.Recive.mac= mac_addr;
   device.Recive.id=this->find_id(mac_addr);
-  device.Send.name=this->find_name(device.Recive.id);
+  device.Recive.name=this->find_name(device.Recive.id);
+  device.Recive.mac=mac_addr;
 
-  Serial.print("Last Packet Recv from id: "); Serial.println( device.Recive.id);
-  for(int i=0;i<6;i++)
- { Serial.print("Last Packet Recv Data: "); Serial.println(*(mac_addr+i),HEX);}
+  menu->ESP_NOW.P_Device[device.Recive.id].Name= device.Recive.name;
+  menu->ESP_NOW.P_Device[device.Recive.id].MacAddres=device.Recive.mac;
 
+   //----------------for RECIVED data----------------
+ if(device.Recive.data.type==false)
+   {
+    menu->ESP_NOW.P_Device[device.Recive.id].Recive.str = device.Recive.data.str;
+    menu->ESP_NOW.P_Device[device.Recive.id].Recive.U8 = 0;
+   } 
+  else
+   {
+    menu->ESP_NOW.P_Device[device.Recive.id].Recive.U8= device.Recive.data.U8;
+    menu->ESP_NOW.P_Device[device.Recive.id].Recive.str= NULL;
+   }
+  menu->ESP_NOW.P_Device[device.Recive.id].Recive.len= device.Recive.data_len;
+   for (int s = 0; s < 6; s++ )
+  MMAAC[s]=mac_addr[s];
+
+  menu->ESP_NOW.P_Device[device.Recive.id].MacAddres= MMAAC;
 }
 
 //------------------------Method of search-----------------------------------
@@ -300,6 +312,17 @@ void EspNow::LoadAvaibleDesvices()
 
 }
 
+
+void EspNow::update()
+{
+ 
+
+  
+  //----------------for both--------------------------
+
+  
+
+}
 
 
 

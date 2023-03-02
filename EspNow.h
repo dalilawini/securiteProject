@@ -1,6 +1,6 @@
 #ifndef ESPNOW_H_
 #define ESPNOW_H_
-
+#include "tools.h"
 #include <Arduino.h>
 #include <string>
 
@@ -49,26 +49,26 @@ typedef struct esp_now_peer_info {
 
 } esp_now_peer_info_t;
 // callback when data is sent from Master to Slave
-
 struct datatype {   //type true => uint8_t 
     bool type; 
-    uint8_t* _U8;
-    char* _str;
+    uint8_t* U8;
+    char* str;
 
 };
 
 struct info {
+    uint8_t  data_len;
     uint8_t id;
+    uint8_t*  mac;
     String name;
     struct datatype data;
-    uint8_t  data_len;
-    uint8_t* mac;
 };
 
-struct Devices {
+typedef struct Devices {
  struct info  Recive;
  struct info  Send;
-};
+}Devices;
+
 
 // Global copy of slave
 #define NUMSLAVES 20
@@ -78,20 +78,24 @@ struct Devices {
 class EspNow
 {
 private:
+    Devices device; 
     void manageSlave() ;
-    struct Devices device; 
     uint8_t find_id (uint8_t* mac_);
     uint8_t find_id (String name);
     String find_name (uint8_t id);
     uint8_t* find_mac(uint8_t id);
+    MENU* menu;
+    void update();
+
+
 
 public:
-
   int SlaveCnt = 0;
+  uint8_t MMAAC[6];
 
   esp_now_peer_info_t slaves[NUMSLAVES] = {};
 
-    EspNow(/* args */);
+    EspNow(MENU* menu);
     ~EspNow();
     //void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) ;
     void InitESPNow() ;
@@ -115,7 +119,6 @@ public:
 
     uint8_t PRINTSCANRESULTS = 1;
     String SlaveName ="Slave";
-
 
 
 

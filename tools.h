@@ -1,19 +1,26 @@
 #ifndef TOOLS1_H
 #define TOOLS1_H
 
+#include <Arduino.h>
 
 
 // ------------PAGE--------------
 struct DataEspNow {
-char* Name ;
-int DataSend;
-int DataRecive;
-char*  MacAddres;
+ char *str;
+ uint8_t* U8;
+ uint8_t len;
+};
+
+struct InfoEspNow {
+uint8_t*  MacAddres; 
+String Name ;
+struct DataEspNow  Send;
+struct DataEspNow  Recive;
 };
 
 struct esp_now {
-char* PageName ="ESP_NOW";
-struct DataEspNow PairedDevices[20];
+const char* PageName ="ESP_NOW";
+struct InfoEspNow P_Device[20];
 char* AvaibleDevices;
 };
 
@@ -30,7 +37,7 @@ int  SignalStrength;
 };
 
 struct Connection {
-char* PageName ="CONNECTION";
+const char* PageName ="CONNECTION";
 struct DataWifi Wifi[20];
 uint8_t AvaibleDevices;
 struct DataConnection  AccessPoint;
@@ -40,21 +47,21 @@ struct DataConnection  AccessPoint;
 
 
 struct ir {
-char* PageName ="IR";
+const char* PageName ="IR";
 int Data_send;
 int Data_Reciv;
 bool SecurityStatus;
 };
 
 struct battery{
-char* PageName ="BATTERY";
+const char* PageName ="BATTERY";
 int Voltage;
 int ON_time;
 int TimeLeft;
 };
 
 struct  InfoSystem  {
-char* PageName ="About";
+const char* PageName ="About";
 char* DeviceName;
 char* Model;
 char* Mac;
@@ -63,7 +70,7 @@ char* SN;
 };
 
 struct system {
-char* PageName ="SYSTEM";
+const char* PageName ="SYSTEM";
 struct InfoSystem About;
 int Update;
 };
@@ -78,6 +85,5 @@ struct battery BATTERY;
 struct system SYSTEM;
 }MENU;
 
-extern MENU Menu;
 
 #endif

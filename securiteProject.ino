@@ -7,15 +7,16 @@
 #include "Wlan.h"
 #include "Time.h"
 #include "tools.h"
+ MENU Menu;
 
 //----------------------class instance ----------------------
-MENU Menu;
+//MENU Menu;
 Oled* Display =new Oled();
 Time* time_=new Time(Display);
 Battery* battery=new Battery(Display);
 Wlan* WIFI=new Wlan(&WiFi,Display);
 Fota* FOTA=new Fota(Display);
-EspNow* espnow=new EspNow();
+EspNow* espnow=new EspNow(&Menu);
 
 
 //----------IR-----------
@@ -47,16 +48,15 @@ void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t data_len) {
   Serial.println(data_len);
 */
 }
-
+char data[]="im master";
 bool click_ok=false;
 uint8_t click_id=0;
-
 void setup() {
-  
-  WIFI->setSsid("dali");
-  WIFI->setPassword("123456789");
+  char  ssid_[]="dali";
+  char password_[]="123456789";
+  WIFI->setSsid(ssid_);
+  WIFI->setPassword(password_);
   Serial.begin(115200);
-
 
 
 
@@ -76,8 +76,8 @@ Display->Logo();
 espnow->ScanForSlave();     //master
 espnow->send_cb(OnDataSent);//master
 
- //espnow->configDeviceAP(); //slave
-// espnow->recv_cb(OnDataRecv);//slave
+espnow->configDeviceAP(); //slave
+espnow->recv_cb(OnDataRecv);//slave
 
  pinMode(16,OUTPUT);
 /*
@@ -127,8 +127,40 @@ void loop() {
   }
 */
    // Display->display();
-espnow->sendData("dali",1);
+espnow->sendData(data,0);
 delay(1000);
+
+Serial.println("");
+
+  Serial.print("id: ");
+  Serial.println(0);
+  Serial.print("name: ");
+  Serial.println(Menu.ESP_NOW.P_Device[0].Name);
+
+  Serial.print("mac :");
+   for (int s = 0; s < 6; s++ )
+      {
+        Serial.print(Menu.ESP_NOW.P_Device[0].MacAddres[s],HEX);
+        if (s != 5) Serial.print(":");
+      }
+  Serial.println("");
+  Serial.println("DATA RECEVID");
+  Serial.print("data: ");
+  Serial.println(Menu.ESP_NOW.P_Device[0].Recive.str);
+  Serial.print("data_length: ");
+  Serial.println(Menu.ESP_NOW.P_Device[0].Recive.len);
+  
+  Serial.println("");
+  Serial.println("DATA SENDED");
+  Serial.print("data: ");
+  Serial.println(Menu.ESP_NOW.P_Device[0].Send.str);
+  Serial.print("data_length: ");
+  Serial.println(Menu.ESP_NOW.P_Device[0].Send.len);
+  Serial.println("");
+  Serial.println("");
+  Serial.println("");
+
+
 
 
 /*
@@ -148,6 +180,7 @@ delay(1000);
 */
 
 }
+/*
 void ESP_NOW(void)
 { 
   Display->setCursor(0,14);
@@ -170,3 +203,4 @@ void ESP_NOW(void)
 
    }
 }
+*/
