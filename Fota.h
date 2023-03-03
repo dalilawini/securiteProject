@@ -1,3 +1,6 @@
+#ifndef FOTA_H_
+#define FOTA_H_
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
@@ -19,20 +22,18 @@
  //current size of written firmware
 
 
-
-class Fota
+class Fota:Oled
 {
 private:
   int currentLength = 0;
   int lenght=0;
   void updateFirmware(uint8_t *data, size_t len);
-  Oled* display;
   unsigned int progress;
 
 public:
 HTTPClient http;
 
-  Fota(Oled* display);
+  Fota();
   ~Fota();
   void begin();
   void dowload_packege();
@@ -40,3 +41,6 @@ HTTPClient http;
   int FW_Size;       //total size of firmware
   String FIRMWARE_VERSION;
 };
+
+#endif 
+

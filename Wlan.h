@@ -1,27 +1,33 @@
-#include "Fota.h"
-
-
-//#include "Oled.h"
-
-#include <Arduino.h>
-
 #ifndef WLAN_H_
 #define WLAN_H_
-#endif 
 
-class Wlan
+#include "tools.h"
+#include <ESP8266WiFi.h>
+#include "Oled.h"
+#include <Arduino.h>
+
+
+
+class Wlan:Oled
 {
 
 private:
-    const char* ssid     = "dali";
-    const char* password = "123456789";
-    ESP8266WiFiClass* WiFi;
-    Oled* Display ;
+     char *ssid ;
+     char *password;
+
+
+
 public:
 
-
-    Wlan(ESP8266WiFiClass* Wifi_Instance,Oled* Display_Instance);
-    ~Wlan(); 
+    Wlan();
+    ~Wlan();
+     
     bool connect();
+    void LoadWifiDesvices();
 
+    char* getSsid();
+    void setSsid(char *ssid);
+    char* getPassword();
+    void setPassword(char *password);
 };
+#endif 

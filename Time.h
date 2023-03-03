@@ -1,4 +1,6 @@
 #pragma once
+#ifndef TIME_H_
+#define TIME_H_
 
 #include "Arduino.h"
 #include <WiFiUdp.h>
@@ -9,7 +11,7 @@
 #define NTP_DEFAULT_LOCAL_PORT 1337
 #define LEAP_YEAR(Y)     ( (Y>0) && !(Y%4) && ( (Y%100) || !(Y%400) ) )
 
-class Time
+class Time:Oled
 {
 private:
     WiFiUDP*          _udp=new WiFiUDP();
@@ -32,9 +34,8 @@ private:
     int DAY;
     int MONTH;
     int YEAR;
-    Oled *display;
 public:
-    Time(Oled * display);
+    Time();
     ~Time();
     bool update();
     unsigned long getEpochTime();
@@ -53,3 +54,4 @@ public:
 
 };
 
+#endif 

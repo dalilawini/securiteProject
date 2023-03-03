@@ -1,8 +1,8 @@
 #include "Time.h"
 
-Time::Time(Oled * display)
+Time::Time()
 {
-    this->display=display;
+    //this->display=display;
 }
 
 Time::~Time()
@@ -197,14 +197,14 @@ bool Time::isValid(byte * ntpPacket)
 
 void Time::TimeDisplay(){
 this->update();
-display->clearDisplay();
-display->setTextSize(2);
-display->setCursor(0,0);
-display->println(this->getFormattedTime());
-display->setTextSize(1);
-display->print("Date:");
-display->print(this->getFormattedDate());
-display->display();
+this->clearDisplay();
+this->setTextSize(2);
+this->setCursor(0,0);
+this->println(this->getFormattedTime());
+this->setTextSize(1);
+this->print("Date:");
+this->print(this->getFormattedDate());
+this->display();
 
 }
 

@@ -1,29 +1,28 @@
 #include "Battery.h"
-Battery::Battery(Oled * display)
+Battery::Battery()
 {
-    this->display=display;
 }
 void Battery::Charge()
 {
-    display->clearDisplay();
-    display->drawBitmap(104,0,EmpttyBattery,24,8, 1);
-    display->display();
+   this->clearDisplay();
+   this->drawBitmap(104,0,EmpttyBattery,24,8, 1);
+   this->display();
     delay(500);
-    display->clearDisplay();
-    display->drawBitmap(104,0,LowBattery, 24,8, 1);
-    display->display();
+   this->clearDisplay();
+   this->drawBitmap(104,0,LowBattery, 24,8, 1);
+   this->display();
     delay(500);
-    display->clearDisplay();
-    display->drawBitmap(104,0,MediumBattery, 24,8, 1);
-    display->display();
+   this->clearDisplay();
+   this->drawBitmap(104,0,MediumBattery, 24,8, 1);
+   this->display();
     delay(500);
-    display->clearDisplay();
-    display->drawBitmap(104,0,HighBattery, 24,8, 1);
-    display->display();
+   this->clearDisplay();
+   this->drawBitmap(104,0,HighBattery, 24,8, 1);
+   this->display();
     delay(500);
-    display->clearDisplay();
-    display->drawBitmap(104,0,FullBattery, 24,8, 1);
-    display->display();
+   this->clearDisplay();
+   this->drawBitmap(104,0,FullBattery, 24,8, 1);
+   this->display();
     delay(500);
     
 

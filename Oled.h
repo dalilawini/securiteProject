@@ -1,6 +1,5 @@
 #ifndef OLED_H_
 #define OLED_H_
-#endif 
 
 
 #include <Wire.h>
@@ -8,6 +7,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -21,14 +21,13 @@
   
 
 
-class Oled:public Adafruit_SSD1306
+class Oled:public Adafruit_SSD1306,ESP8266WiFiClass
 {
 private:
-    ESP8266WiFiClass* WiFi;
 public:
     Oled();
     void wifi_connect();
-    void wifi_init(ESP8266WiFiClass* wifi);
+    void wifi_init();
     void Logo();
     void IRcode(String code);
 
@@ -38,4 +37,5 @@ public:
 
 };
 
+#endif 
 
