@@ -22,19 +22,18 @@
  //current size of written firmware
 
 
-class Fota
+class Fota:Oled
 {
 private:
   int currentLength = 0;
   int lenght=0;
   void updateFirmware(uint8_t *data, size_t len);
-  Oled* display;
   unsigned int progress;
 
 public:
 HTTPClient http;
 
-  Fota(Oled* display);
+  Fota();
   ~Fota();
   void begin();
   void dowload_packege();

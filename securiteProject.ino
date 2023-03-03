@@ -7,16 +7,17 @@
 #include "Wlan.h"
 #include "Time.h"
 #include "tools.h"
- MENU Menu;
 
 //----------------------class instance ----------------------
-//MENU Menu;
-Oled* Display =new Oled();
-Time* time_=new Time(Display);
-Battery* battery=new Battery(Display);
-Wlan* WIFI=new Wlan(&WiFi,Display);
-Fota* FOTA=new Fota(Display);
+ MENU Menu;
 EspNow* espnow=new EspNow(&Menu);
+
+Oled* Display =new Oled();
+
+Time* time_=new Time();
+Battery* battery=new Battery();
+Wlan* WIFI=new Wlan();
+Fota* FOTA=new Fota();
 
 
 //----------IR-----------
@@ -52,6 +53,7 @@ char data[]="im master";
 bool click_ok=false;
 uint8_t click_id=0;
 void setup() {
+
   char  ssid_[]="dali";
   char password_[]="123456789";
   WIFI->setSsid(ssid_);
@@ -61,7 +63,7 @@ void setup() {
 
 
  pinMode(0, INPUT);
-Display->Logo();
+//Display->Logo();
 //battery->Charge();
  // FOTA->begin();
  //irrecv.enableIRIn(); // Start the IR receiver
@@ -71,13 +73,13 @@ Display->Logo();
 
  //espnow->configDeviceAP(); //for test find mac_id for master
  //delay(5000);
-   espnow->InitESPNow();
+  // espnow->InitESPNow();
 
-espnow->ScanForSlave();     //master
-espnow->send_cb(OnDataSent);//master
+//espnow->ScanForSlave();     //master
+//espnow->send_cb(OnDataSent);//master
 
-espnow->configDeviceAP(); //slave
-espnow->recv_cb(OnDataRecv);//slave
+//espnow->configDeviceAP(); //slave
+//espnow->recv_cb(OnDataRecv);//slave
 
  pinMode(16,OUTPUT);
 /*
@@ -109,7 +111,7 @@ void loop() {
   Display->setTextSize(1);
 */
 //time_->update();
- //time_->TimeDisplay();
+//time_->TimeDisplay();
 
 
 
@@ -127,7 +129,7 @@ void loop() {
   }
 */
    // Display->display();
-espnow->sendData(data,0);
+espnow->sendData(data,1);
 delay(1000);
 
 Serial.println("");

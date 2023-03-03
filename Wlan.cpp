@@ -1,10 +1,8 @@
 #include "Wlan.h"
 
 
- Wlan::Wlan(ESP8266WiFiClass* Wifi_Instance,Oled* Display_Instance)
+ Wlan::Wlan()
 {
-  WiFi=Wifi_Instance;
-  Display=Display_Instance;
 }
 
 char* Wlan::getSsid()
@@ -32,17 +30,17 @@ void Wlan::setPassword(char *password)
 
 bool Wlan::connect()
  { 
-  WiFi->mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
   this->LoadWifiDesvices();
-  WiFi->begin(ssid, password);
+  WiFi.begin(ssid, password);
 
-  Display->wifi_init(WiFi);
+  this->wifi_init();
 
-  while (WiFi->status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
 
-  Display->wifi_connect();
+  this->wifi_connect();
 
   return true;
  }

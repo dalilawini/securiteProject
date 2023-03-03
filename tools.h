@@ -3,16 +3,18 @@
 
 #include <Arduino.h>
 
+#define L_D 20    //lenght data 
 
 // ------------PAGE--------------
 struct DataEspNow {
- char *str;
- uint8_t* U8;
+ char str[L_D];
+ uint8_t U8[L_D];
  uint8_t len;
 };
 
 struct InfoEspNow {
-uint8_t*  MacAddres; 
+uint8_t status;
+uint8_t MacAddres[6]; 
 String Name ;
 struct DataEspNow  Send;
 struct DataEspNow  Recive;
