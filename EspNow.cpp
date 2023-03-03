@@ -213,20 +213,11 @@ void EspNow::send_cb(esp_now_send_cb_t cp) {
 void EspNow::send_cb( uint8_t *mac_addr, uint8_t status){
 
   uint8_t id =this->find_id(mac_addr);
+  menu->ESP_NOW.P_Device[id].status=status;
   Serial.print("Last Packet Send from id: "); Serial.println( id);
   Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
   //----------------for SENDED data----------------
-   if(device.Recive.data.type==false)
-   {
-    menu->ESP_NOW.P_Device[device.Recive.id].Send.str = device.Send.data.str; 
-    menu->ESP_NOW.P_Device[device.Recive.id].Send.U8 = 0;
-   } 
-  else
-   {
-    menu->ESP_NOW.P_Device[device.Recive.id].Send.U8= device.Send.data.U8;
-    menu->ESP_NOW.P_Device[device.Recive.id].Send.str= NULL;
-   }  
-     menu->ESP_NOW.P_Device[device.Recive.id].Send.len= device.Send.data_len;
+  updateSend();
 
 }
 
@@ -243,26 +234,7 @@ void EspNow::recv_cb(uint8_t *mac_addr, uint8_t *data, uint8_t data_len){
   device.Recive.id=this->find_id(mac_addr);
   device.Recive.name=this->find_name(device.Recive.id);
   device.Recive.mac=mac_addr;
-
-  menu->ESP_NOW.P_Device[device.Recive.id].Name= device.Recive.name;
-  menu->ESP_NOW.P_Device[device.Recive.id].MacAddres=device.Recive.mac;
-
-   //----------------for RECIVED data----------------
- if(device.Recive.data.type==false)
-   {
-    menu->ESP_NOW.P_Device[device.Recive.id].Recive.str = device.Recive.data.str;
-    menu->ESP_NOW.P_Device[device.Recive.id].Recive.U8 = 0;
-   } 
-  else
-   {
-    menu->ESP_NOW.P_Device[device.Recive.id].Recive.U8= device.Recive.data.U8;
-    menu->ESP_NOW.P_Device[device.Recive.id].Recive.str= NULL;
-   }
-  menu->ESP_NOW.P_Device[device.Recive.id].Recive.len= device.Recive.data_len;
-   for (int s = 0; s < 6; s++ )
-  MMAAC[s]=mac_addr[s];
-
-  menu->ESP_NOW.P_Device[device.Recive.id].MacAddres= MMAAC;
+  updateRecive();
 }
 
 //------------------------Method of search-----------------------------------
@@ -313,59 +285,39 @@ void EspNow::LoadAvaibleDesvices()
 }
 
 
-void EspNow::update()
+void EspNow::updateSend()
 {
- 
-
-  
-  //----------------for both--------------------------
-
-  
+  if(device.Send.data.type==false)
+    {
+      memcpy( menu->ESP_NOW.P_Device[device.Send.id].Send.str, device.Send.data.str, device.Send.data_len); 
+      memset(menu->ESP_NOW.P_Device[device.Send.id].Send.U8,0,device.Send.data_len);
+    } 
+    else
+    {
+      memcpy( menu->ESP_NOW.P_Device[device.Send.id].Send.U8, device.Send.data.U8, device.Send.data_len);
+      memset( menu->ESP_NOW.P_Device[device.Send.id].Send.str,0,device.Send.data_len);
+    }  
+  menu->ESP_NOW.P_Device[device.Send.id].Send.len= device.Send.data_len;
 
 }
 
+void EspNow::updateRecive()
+{
+//----------------for RECIVED data----------------
+  //----------------for both--------------------------
+  menu->ESP_NOW.P_Device[device.Recive.id].Name= device.Recive.name;
+  memcpy(menu->ESP_NOW.P_Device[device.Recive.id].MacAddres, device.Recive.mac, 6);
+  menu->ESP_NOW.P_Device[device.Recive.id].Recive.len= device.Recive.data_len;
 
+ if(device.Recive.data.type==false)
+    {
+      memcpy( menu->ESP_NOW.P_Device[device.Recive.id].Recive.str, device.Recive.data.str, device.Recive.data_len); 
+      memset(menu->ESP_NOW.P_Device[device.Recive.id].Recive.U8,0,device.Recive.data_len);
+    } 
+    else
+    {
+      memcpy( menu->ESP_NOW.P_Device[device.Recive.id].Recive.U8, device.Recive.data.U8, device.Recive.data_len);
+      memset( menu->ESP_NOW.P_Device[device.Recive.id].Send.str,0,device.Recive.data_len);
+    }  
 
-        /*Serial.print("Send Status: ");
-        if (result == ESP_OK) 
-        {
-        Serial.println("Success");
-        } else if (result == ESP_ERR_ESPNOW_NOT_INIT) {
-            // How did we get so far!!
-            Serial.println("ESPNOW not Init.");
-        } else if (result == ESP_ERR_ESPNOW_ARG) {
-            Serial.println("Invalid Argument");
-        } else if (result == ESP_ERR_ESPNOW_INTERNAL) {
-            Serial.println("Internal Error");
-        } else if (result == ESP_ERR_ESPNOW_NO_MEM) {
-            Serial.println("ESP_ERR_ESPNOW_NO_MEM");
-        } else if (result == ESP_ERR_ESPNOW_NOT_FOUND) {
-            Serial.println("Peer not found.");
-        } else {
-            Serial.println("Not sure what happened");
-        }
-  
-
-
-
-     if (addStatus == ESP_OK) {
-          // Pair success
-          Serial.println("Pair success");
-        } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
-          // How did we get so far!!
-          Serial.println("ESPNOW Not Init");
-        } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
-          Serial.println("Add Peer - Invalid Argument");
-        } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
-          Serial.println("Peer list full");
-        } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
-          Serial.println("Out of memory");
-        } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
-          Serial.println("Peer Exists");
-        } else {
-          Serial.println("Not sure what happened");
-          Serial.println(addStatus);
-        }
-        delay(100);
-      }
-      */
+}

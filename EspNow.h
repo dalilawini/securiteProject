@@ -49,6 +49,8 @@ typedef struct esp_now_peer_info {
 
 } esp_now_peer_info_t;
 // callback when data is sent from Master to Slave
+
+
 struct datatype {   //type true => uint8_t 
     bool type; 
     uint8_t* U8;
@@ -59,7 +61,7 @@ struct datatype {   //type true => uint8_t
 struct info {
     uint8_t  data_len;
     uint8_t id;
-    uint8_t*  mac;
+    uint8_t* mac;
     String name;
     struct datatype data;
 };
@@ -85,7 +87,9 @@ private:
     String find_name (uint8_t id);
     uint8_t* find_mac(uint8_t id);
     MENU* menu;
-    void update();
+    void updateRecive();
+    void updateSend();
+
 
 
 
