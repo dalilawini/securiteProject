@@ -1,8 +1,9 @@
 #include "Wlan.h"
 
 
- Wlan::Wlan()
+ Wlan::Wlan(MENU* menu)
 {
+this->menu=menu;
 }
 
 char* Wlan::getSsid()
@@ -46,17 +47,17 @@ bool Wlan::connect()
  }
 void Wlan::LoadWifiDesvices()
 {
-  /*
-uint8_t DevicesNumber = WiFi->scanNetworks();
-Menu.CONNECTION.AvaibleDevices=DevicesNumber;
+  
+uint8_t DevicesNumber = WiFi.scanNetworks();
+menu->CONNECTION.AvaibleDevices=DevicesNumber;
 for(int i=0;i<DevicesNumber;i++)
 {
 
-Menu.CONNECTION.Wifi[i].DeviceName=WiFi->SSID(i);
-Menu.CONNECTION.Wifi[i].Mac=WiFi->BSSIDstr(i);
-Menu.CONNECTION.Wifi[i].SignalStrength=WiFi->RSSI(i);
+menu->CONNECTION.Wifi[i].DeviceName=WiFi.SSID(i);
+menu->CONNECTION.Wifi[i].Mac=WiFi.BSSIDstr(i);
+menu->CONNECTION.Wifi[i].SignalStrength=WiFi.RSSI(i);
 }
-*/
+
 }
 
 

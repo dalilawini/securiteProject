@@ -4,26 +4,79 @@
 #include <Arduino.h>
 
 #define L_D 20    //lenght data 
+//---------------ESP_NOw-----------------
+enum EspNow_code{
+empty=0x00,
+pairingRequest=0x10,
+pairingRefused,
+pairingOK,
+pairingIDL
+
+
+};
 
 // ------------PAGE--------------
-struct DataEspNow {
+struct ValueEspNow {
  char str[L_D];
- uint8_t U8[L_D];
+ enum EspNow_code U8;
  uint8_t len;
 };
 
-struct InfoEspNow {
-uint8_t status;
-uint8_t MacAddres[6]; 
-String Name ;
-struct DataEspNow  Send;
-struct DataEspNow  Recive;
+struct DataEspNow {
+struct ValueEspNow  Send;
+struct ValueEspNow  Recive;
+};
+enum status_{
+  failed=0,
+  ready,
+  paired,
+  refused,
+  IDL
+
 };
 
-struct esp_now {
+struct Info1EspNow {
+  uint8_t id;
+  String Name ;
+  enum EspNow_code Data_U8;
+  int32_t RSSI;     // wifi Signal Strength Indicato
+  enum status_ status=ready;
+  String BSSIDstr ; //mac
+  uint8_t MacAddres[6]; 
+  uint8_t channel ;
+  uint8_t encrypt[6];           /**< ESPNOW peer local master key that is used to encrypt data */
+  uint8_t encrypt_len ;      
+
+};
+
+struct Info2EspNow {
+enum status_ status_paired;
+String DeviceName ;
+String DeviceMac;
+enum EspNow_code PairData ;
+uint8_t PairMac[6]; 
+
+};
+
+struct Info3EspNow {
+uint8_t status;
+String Name ;
+uint8_t MacAddres[6];
+};
+
+struct Esp_Now{
+struct DataEspNow Data;
+struct Info3EspNow Info;
+};
+
+
+
+struct  esp_now{
 const char* PageName ="ESP_NOW";
-struct InfoEspNow P_Device[20];
-char* AvaibleDevices;
+struct Esp_Now P_Device[20];
+struct Info1EspNow AvaibleDevices[20]= {};
+uint8_t NumberOfAvaibleDevices;
+struct Info2EspNow PairingMode;
 };
 
 struct  DataConnection{

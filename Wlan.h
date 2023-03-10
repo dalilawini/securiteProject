@@ -14,12 +14,12 @@ class Wlan:Oled
 private:
      char *ssid ;
      char *password;
-
+     MENU* menu;
 
 
 public:
 
-    Wlan();
+    Wlan(MENU* menu);
     ~Wlan();
      
     bool connect();
