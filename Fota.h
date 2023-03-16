@@ -8,7 +8,8 @@
 
 #include <ArduinoOTA.h>
 #include <Arduino.h>
-#include "Battery.h"
+#include <Adafruit_SSD1306.h>
+
 
 #define HOST_FOR_JSON "https://actiaserver.000webhostapp.com/dali.json"
 #define HOST "https://actiaserver.000webhostapp.com/securiteProject.ino.bin"
@@ -22,7 +23,7 @@
  //current size of written firmware
 
 
-class Fota:Oled
+class Fota:public Adafruit_SSD1306
 {
 private:
   int currentLength = 0;

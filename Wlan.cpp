@@ -35,13 +35,13 @@ bool Wlan::connect()
   this->LoadWifiDesvices();
   WiFi.begin(ssid, password);
 
-  this->wifi_init();
+  //this->wifi_init();
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
 
-  this->wifi_connect();
+  //this->wifi_connect();
 
   return true;
  }

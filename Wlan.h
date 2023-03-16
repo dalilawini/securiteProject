@@ -3,12 +3,11 @@
 
 #include "tools.h"
 #include <ESP8266WiFi.h>
-#include "Oled.h"
 #include <Arduino.h>
 
 
 
-class Wlan:Oled
+class Wlan
 {
 
 private:

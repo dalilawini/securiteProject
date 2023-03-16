@@ -11,7 +11,7 @@
 #define NTP_DEFAULT_LOCAL_PORT 1337
 #define LEAP_YEAR(Y)     ( (Y>0) && !(Y%4) && ( (Y%100) || !(Y%400) ) )
 
-class Time:Oled
+class Time
 {
 private:
     WiFiUDP*          _udp=new WiFiUDP();
@@ -50,7 +50,7 @@ public:
     int getYear();
     String getFormattedTime(unsigned long secs=0) ;
     String getFormattedDate(unsigned long secs=0) ;
-    void TimeDisplay();
+    //void TimeDisplay();
 
 };
 

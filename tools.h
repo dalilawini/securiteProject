@@ -72,7 +72,8 @@ struct Info3EspNow Info;
 
 
 struct  esp_now{
-const char* PageName ="ESP_NOW";
+const char* Name ="ESP_NOW";
+const char* PageName[3]={"Avaible Devices","Paired Devices","Pairing Mode"};
 struct Esp_Now P_Device[20];
 struct Info1EspNow AvaibleDevices[20]= {};
 uint8_t NumberOfAvaibleDevices;
@@ -92,7 +93,8 @@ int  SignalStrength;
 };
 
 struct Connection {
-const char* PageName ="CONNECTION";
+const char* Name ="CONNECTION";
+const char*PageName[3]={"Wifi","AvaibleDevices","AccessPoint"};
 struct DataWifi Wifi[20];
 uint8_t AvaibleDevices;
 struct DataConnection  AccessPoint;
@@ -102,21 +104,20 @@ struct DataConnection  AccessPoint;
 
 
 struct ir {
-const char* PageName ="IR";
+const char* Name ="IR";
 int Data_send;
 int Data_Reciv;
 bool SecurityStatus;
 };
 
 struct battery{
-const char* PageName ="BATTERY";
+const char* Name ="BATTERY";
 int Voltage;
 int ON_time;
 int TimeLeft;
 };
 
 struct  InfoSystem  {
-const char* PageName ="About";
 char* DeviceName;
 char* Model;
 char* Mac;
@@ -125,7 +126,8 @@ char* SN;
 };
 
 struct system {
-const char* PageName ="SYSTEM";
+const char* Name ="SYSTEM";
+const char* PageName[2]={"About","Update"};
 struct InfoSystem About;
 int Update;
 };

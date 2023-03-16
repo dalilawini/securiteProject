@@ -13,7 +13,7 @@
 EspNow* espnow=new EspNow(&Menu);
 Wlan* WIFI=new Wlan(&Menu);
 
-Oled* Display =new Oled();
+Oled* Display =new Oled(&Menu);
 
 Time* time_=new Time();
 Battery* battery=new Battery();
@@ -43,7 +43,7 @@ void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t data_len) {
   espnow->recv_cb(mac_addr, data,data_len);
 }
 
-uint8_t device=1;
+uint8_t device=3;
 char data[]="im Master"; 
 
 //uint8_t device=2;
@@ -54,8 +54,9 @@ bool click_ok=false;
 uint8_t click_id=0;
 
 
-void setup() {
 
+void setup() {
+ // Display->OledBegin(&Menu);
   char  ssid_[]="dali";
   char password_[]="123456789";
   WIFI->setSsid(ssid_);
@@ -65,7 +66,7 @@ void setup() {
 
 
  pinMode(0, INPUT);
-Display->Logo();
+//Display->Logo();
 //battery->Charge();
  // FOTA->begin();
  //irrecv.enableIRIn(); // Start the IR receiver
@@ -139,13 +140,31 @@ Serial.print("Signal Strength: ");
 Serial.println(Menu.CONNECTION.Wifi[i].SignalStrength);
 }
 */
+
+
 }
+
+
+
+
 void loop() {
-    if (Serial.available()) {
-   if (Serial.read()=='a')
-         espnow->actionRequest(0);
+
+//Display->MeNu();
+    
+
+
 
   }
+
+
+
+
+
+
+
+
+
+       //  espnow->actionRequest(0);
 
  /*if (!digitalRead(0)) 
     {
@@ -179,6 +198,7 @@ void loop() {
 
    }
 }*/
+/*
 if(device ==2)
 {
 espnow->listenner();
@@ -209,7 +229,7 @@ uint8_t idd=0;
 }
  delay(500);
 
-}
+}*/
 /*
 Serial.println("");
 
