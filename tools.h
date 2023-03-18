@@ -94,7 +94,7 @@ int  SignalStrength;
 
 struct Connection {
 const char* Name ="CONNECTION";
-const char*PageName[3]={"Wifi","AvaibleDevices","AccessPoint"};
+const char*PageName[3]={"Wifi","Avaible Devices","Access Point"};
 struct DataWifi Wifi[20];
 uint8_t AvaibleDevices;
 struct DataConnection  AccessPoint;

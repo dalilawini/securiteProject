@@ -45,6 +45,8 @@ bool Wlan::connect()
 
   return true;
  }
+
+ 
 void Wlan::LoadWifiDesvices()
 {
   

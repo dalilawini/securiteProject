@@ -29,24 +29,19 @@ class Oled:public Adafruit_SSD1306,ESP8266WiFiClass
 
 private:
   MENU* Menu;
+  const char* menu[5];
+  const char * EspNow_Page[3];
 
-  const char* menu[5]=
-  { 
-    Menu->ESP_NOW.Name,
-    Menu->CONNECTION.Name,
-    Menu->IR.Name,
-    Menu->BATTERY.Name,
-    Menu->SYSTEM.Name
-  };
-  const char * page[3];
-//  memcpy(page,Menu->ESP_NOW.PageName,3);
+ 
 
  // 
   
 //temporelle
-  uint8_t id[2]={1,0};
-uint8_t id_back[2]={0,0};
-uint8_t lk=0;
+uint8_t page_jump=12;
+uint8_t id;
+int BasePage=0;
+int page=0;
+const char * title[3];
 //-----------------
 
   struct cordonne {
@@ -68,7 +63,7 @@ public:
     void Zone(char ZoNe,const char* txt);
 
 
-    Oled(MENU* menu);
+    Oled(MENU* menu_);
     void wifi_connect();
     void wifi_init();
     void Logo();

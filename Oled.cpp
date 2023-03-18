@@ -1,14 +1,19 @@
 #include "Oled.h"
 
-Oled::Oled(MENU* menu):Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
+Oled::Oled(MENU* menu_):Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
 {
- this->Menu=menu;
+ this->Menu=menu_;
  Adafruit_SSD1306::begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
  this->clearDisplay();
  this->setTextSize(1);
  this->setTextColor(SSD1306_WHITE);
  this->setCursor(0,0); 
- 
+   menu[0]= Menu->ESP_NOW.Name;
+   menu[1]= Menu->CONNECTION.Name;
+   menu[2]= Menu->IR.Name;
+   menu[3]= Menu->BATTERY.Name;
+   menu[4]= Menu->SYSTEM.Name;
+
 }
 
 Oled::~Oled()
@@ -115,25 +120,94 @@ void Oled::MeNu()
   if (Serial.available()) {
     int d=Serial.read();
    if (d=='a')
-   id[lk]++;
+   id++;
    else if (d=='z')
-   id[lk]--;
+   id--;
    else if (d=='q')
-   {
-        memcpy(id_back,id,3);
-             lk++;
-              id[lk]++;
+   {    
+     id=1;
+     page_jump-=4;
+     BasePage=page;
    }
-   d=0;
-     // Display->Zone('A', page[id_back[0]][id_back[1]]);
-
-   if(id[1]==0&&id[2]==0);
-      //Display->setTextSize(2);
-     
-        //  Display->setTextSize(1);
-   this->print("dali");
+      else if (d=='w')
+   {    
+     id=1;
+     page_jump=12;
+     BasePage=0;
+   }
    
+   page=BasePage+(id<<page_jump);
+
+  if(!(page&0x0fff))
+  {    
+    Zone('A',"menu");
+    this->setTextSize(2);
+    Zone('D',menu[id-1]);
+    title[0]=menu[id-1];
+  }
+  else if(!(page&0x00ff))
+  {
+    Zone('A',title[0]);
+    switch (page>>12)
+    {
+      case 1:  
+              this->setTextSize(1);
+              Zone('D',Menu->ESP_NOW.PageName[id-1]);
+              title[1]=Menu->ESP_NOW.PageName[id-1];
+              break;
+      case 2:  
+              this->setTextSize(1);
+              Zone('D',Menu->CONNECTION.PageName[id-1]);
+              title[1]=Menu->CONNECTION.PageName[id-1];
+              break;
+      case 5:  
+              this->setTextSize(2);
+              Zone('D',Menu->SYSTEM.PageName[id-1]);
+              title[1]=Menu->SYSTEM.PageName[id-1];
+              break;    
+              
+    }
+  }
+  else if(!(page&0x000f))
+  {
+    Zone('A',title[1]);
+    switch ((page&0xff00)>>8)
+    {
+      case 0x21:  
+              this->setTextSize(1);
+              Zone('D'
+              Zone('D',Menu->CONNECTION.Wifi[id-1].DeviceName.c_str());
+              break;
+      case 0x22:  
+              this->setTextSize(1);
+              Zone('D',Menu->CONNECTION.PageName[id-1]);
+              break;
+      case 0x23:  
+              this->setTextSize(2);
+              Zone('D',Menu->SYSTEM.PageName[id-1]);
+              break;    
+              
+    };
+  }
+
+
+Serial.println((page&0xff00)>>8,HEX);
+
+  
+  
+        
+
+    //Zone('A', page[id_back[0]][id_back[1]]);
+
+  // Serial.print(page[0]);
+  /* for(int i=0;i<3;i++)
+   Serial.print(id[i]);
+      Serial.println("");
+
+   */
   // Display->Zone('D', page[id[0]][id[1]]);
+     d=0;
+
   }
 }
 

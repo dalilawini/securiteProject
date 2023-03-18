@@ -66,10 +66,11 @@ void setup() {
 
 
  pinMode(0, INPUT);
-//Display->Logo();
+Display->Logo();
 //battery->Charge();
  // FOTA->begin();
  //irrecv.enableIRIn(); // Start the IR receiver
+ WIFI->LoadWifiDesvices();
  //WIFI->connect();
  //FOTA->check_for_update();
  //FOTA->dowload_packege();
@@ -149,9 +150,9 @@ Serial.println(Menu.CONNECTION.Wifi[i].SignalStrength);
 
 void loop() {
 
-//Display->MeNu();
     
 
+Display->MeNu();
 
 
   }
