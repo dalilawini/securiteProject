@@ -1,7 +1,9 @@
 #include "Battery.h"
+/*
 Battery::Battery()
 {
 }
+
 void Battery::Charge()
 {
    this->clearDisplay();
@@ -27,3 +29,4 @@ void Battery::Charge()
     
 
 }
+*/

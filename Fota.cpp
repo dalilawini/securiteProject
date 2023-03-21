@@ -3,7 +3,6 @@
 
 Fota::Fota()
 {
-   
     
 }
 
@@ -11,19 +10,18 @@ Fota::~Fota()
 {
 }
 
+
 void Fota::begin()
 {
  
-
-
     this->setTextSize(1);
     this->setCursor(0, 0);
     this->println("FOTA BEGIN");
     this->display();
     delay(500);
 
-
 }
+
 void Fota::check_for_update()
 {
     std::unique_ptr<BearSSL::WiFiClientSecure>client( new BearSSL::WiFiClientSecure);

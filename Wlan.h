@@ -3,23 +3,22 @@
 
 #include "tools.h"
 #include <ESP8266WiFi.h>
-#include "Oled.h"
 #include <Arduino.h>
 
 
 
-class Wlan:Oled
+class Wlan
 {
 
 private:
      char *ssid ;
      char *password;
-
+     MENU* menu;
 
 
 public:
 
-    Wlan();
+    Wlan(MENU* menu);
     ~Wlan();
      
     bool connect();

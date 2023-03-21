@@ -51,9 +51,10 @@ typedef struct esp_now_peer_info {
 // callback when data is sent from Master to Slave
 
 
+
 struct datatype {   //type true => uint8_t 
     bool type; 
-    uint8_t* U8;
+    enum EspNow_code  U8;
     char* str;
 
 };
@@ -80,6 +81,7 @@ typedef struct Devices {
 class EspNow
 {
 private:
+    String SlaveName="NouDa" ;
     Devices device; 
     void manageSlave() ;
     uint8_t find_id (uint8_t* mac_);
@@ -96,6 +98,11 @@ private:
 public:
   int SlaveCnt = 0;
   uint8_t MMAAC[6];
+  unsigned long previousTimeSend[20]; // Variable to store the previous time
+  unsigned long previousTimeCheck = 0; // Variable to store the previous time
+
+  const unsigned long intervalSend = 1000; 
+  uint8_t check_send[20];
 
   esp_now_peer_info_t slaves[NUMSLAVES] = {};
 
@@ -105,15 +112,20 @@ public:
     void InitESPNow() ;
     void ScanForSlave() ;
 
+    void sendRequest(uint8_t id) ;
+    void actionRequest(uint8_t id );
+    void listenner() ;
+
+
     void sendData(char* data,uint8_t id) ;
-    void sendData(uint8_t* data,uint8_t id) ;
-    void sendData(uint8_t* data,String name) ;
+    void sendCode(enum EspNow_code data,uint8_t id) ;
+    void sendCode(enum EspNow_code  data,String name) ;
     void sendData(char* data,String name) ;
 
     void send_cb(esp_now_send_cb_t cp);
     void send_cb( uint8_t *mac_addr, uint8_t status);
 
-    void configDeviceAP(void);
+    void Pairing(void);
     void recv_cb(esp_now_recv_cb_t cp);
     void recv_cb(u8 *mac_addr, u8 *data, u8 len);
     
@@ -121,9 +133,8 @@ public:
     void LoadAvaibleDesvices();
 
 
-    uint8_t PRINTSCANRESULTS = 1;
-    String SlaveName ="Slave";
-
+    uint8_t PRINTSCANRESULTS = 0;
+    String Prefix;
 
 
 };

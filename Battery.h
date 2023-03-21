@@ -1,9 +1,9 @@
 #ifndef BATTERY_H_
 #define BATTERY_H_
+#include <Arduino.h>
 
-#include "Oled.h"
 
-class Battery:Oled
+class Battery
 {
 private:
 uint8_t FullBattery[24]=
@@ -37,7 +37,7 @@ uint8_t EmpttyBattery[24]=
 
     /* data */
 public:
-    Battery();
+   // Battery();
     void Charge();
     ~Battery();
 };

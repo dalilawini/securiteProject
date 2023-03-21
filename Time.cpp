@@ -194,7 +194,7 @@ bool Time::isValid(byte * ntpPacket)
 
 	return true;
 }
-
+/*
 void Time::TimeDisplay(){
 this->update();
 this->clearDisplay();
@@ -207,7 +207,7 @@ this->print(this->getFormattedDate());
 this->display();
 
 }
-
+*/
 void Time::end() {
   this->_udp->stop();
 

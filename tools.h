@@ -1,47 +1,110 @@
-#ifndef TOOLS1_H
-#define TOOLS1_H
+#ifndef TOOLS_H
+#define TOOLS_H
 
 #include <Arduino.h>
+#include <IPAddress.h>
 
 #define L_D 20    //lenght data 
+//---------------ESP_NOw-----------------
+enum EspNow_code{
+empty=0x00,
+pairingRequest=0x10,
+pairingRefused,
+pairingOK,
+pairingIDL
+
+
+};
 
 // ------------PAGE--------------
-struct DataEspNow {
+struct ValueEspNow {
  char str[L_D];
- uint8_t U8[L_D];
+ enum EspNow_code U8;
  uint8_t len;
 };
 
-struct InfoEspNow {
-uint8_t status;
-uint8_t MacAddres[6]; 
-String Name ;
-struct DataEspNow  Send;
-struct DataEspNow  Recive;
+struct DataEspNow {
+struct ValueEspNow  Send;
+struct ValueEspNow  Recive;
+};
+enum status_{
+  failed=0,
+  ready,
+  paired,
+  refused,
+  IDL
+
 };
 
-struct esp_now {
-const char* PageName ="ESP_NOW";
-struct InfoEspNow P_Device[20];
-char* AvaibleDevices;
+struct Info1EspNow {
+  uint8_t id;
+  String Name ;
+  enum EspNow_code Data_U8;
+  int32_t RSSI;     // wifi Signal Strength Indicato
+  enum status_ status=ready;
+  String BSSIDstr ; //mac
+  uint8_t MacAddres[6]; 
+  uint8_t channel ;
+  uint8_t encrypt[6];           /**< ESPNOW peer local master key that is used to encrypt data */
+  uint8_t encrypt_len ;      
+
+};
+
+struct Info2EspNow {
+enum status_ status_paired;
+String DeviceName ;
+String DeviceMac;
+enum EspNow_code PairData ;
+uint8_t PairMac[6]; 
+
+};
+
+struct Info3EspNow {
+uint8_t status;
+String Name ;
+uint8_t MacAddres[6];
+};
+
+struct Esp_Now{
+struct DataEspNow Data;
+struct Info3EspNow Info;
+};
+
+
+
+struct  esp_now{
+const char* Name ="ESP_NOW";
+const char* PageName[3]={"Avaible Devices","Paired Devices","Pairing Mode"};
+struct Esp_Now P_Device[20];
+struct Info1EspNow AvaibleDevices[20]= {};
+uint8_t NumberOfAvaibleDevices;
+struct Info2EspNow PairingMode;
 };
 
 struct  DataConnection{
 String DeviceName;
-String IP;
-int Mac;
+IPAddress IP;
+String Mac;
 };
 
-struct  DataWifi{
+struct  DataWifi_1{
 String DeviceName;
-String Mac;
 int  SignalStrength;
 };
 
-struct Connection {
-const char* PageName ="CONNECTION";
-struct DataWifi Wifi[20];
-uint8_t AvaibleDevices;
+struct  DataWifi_2{
+String DeviceName;
+String Mac;
+IPAddress ip;
+int  SignalStrength;
+};
+
+struct WIFI {
+const char* Name ="Wifi";
+const char*PageName[3]={"Avaible networks","Network Info","Access Point"};
+struct DataWifi_1 AvaibleNetworks[20];
+uint8_t ScanResult;
+struct DataWifi_2 NetworkInfo;
 struct DataConnection  AccessPoint;
 };
 
@@ -49,39 +112,40 @@ struct DataConnection  AccessPoint;
 
 
 struct ir {
-const char* PageName ="IR";
+const char* Name ="IR";
 int Data_send;
 int Data_Reciv;
 bool SecurityStatus;
 };
 
 struct battery{
-const char* PageName ="BATTERY";
+const char* Name ="BATTERY";
 int Voltage;
 int ON_time;
 int TimeLeft;
 };
 
 struct  InfoSystem  {
-const char* PageName ="About";
-char* DeviceName;
-char* Model;
-char* Mac;
-char* Version;
-char* SN;
+String DeviceName="InfraRedSecurity";
+String Model="NouDa_V0";
+String Bord="esp8266";
+String Mac;
+String Version="1.0.0.1";
+String SN="N230896D10119500";
 };
 
 struct system {
-const char* PageName ="SYSTEM";
+const char* Name ="SYSTEM";
+const char* PageName[2]={"About","Update"};
 struct InfoSystem About;
-int Update;
+String Update="Up To Date ";
 };
 
 
 
 typedef struct MENU {
 struct esp_now ESP_NOW;
-struct Connection CONNECTION;
+struct WIFI Wifi;
 struct ir IR;
 struct battery BATTERY;
 struct system SYSTEM;
