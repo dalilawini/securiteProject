@@ -9,7 +9,7 @@ Oled::Oled(MENU* menu_):Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLE
  this->setTextColor(SSD1306_WHITE);
  this->setCursor(0,0); 
    menu[0]= Menu->ESP_NOW.Name;
-   menu[1]= Menu->CONNECTION.Name;
+   menu[1]= Menu->Wifi.Name;
    menu[2]= Menu->IR.Name;
    menu[3]= Menu->BATTERY.Name;
    menu[4]= Menu->SYSTEM.Name;
@@ -138,14 +138,15 @@ void Oled::MeNu()
    
    page=BasePage+(id<<page_jump);
 
-  if(!(page&0x0fff))
+  if(!(page&0x0fff))                       //--------------------------------------> Menu 
   {    
+    Zone('A',"menu");
     Zone('A',"menu");
     this->setTextSize(2);
     Zone('D',menu[id-1]);
     title[0]=menu[id-1];
   }
-  else if(!(page&0x00ff))
+  else if(!(page&0x00ff))                  //--------------------------------------> PAGE 
   {
     Zone('A',title[0]);
     switch (page>>12)
@@ -157,8 +158,8 @@ void Oled::MeNu()
               break;
       case 2:  
               this->setTextSize(1);
-              Zone('D',Menu->CONNECTION.PageName[id-1]);
-              title[1]=Menu->CONNECTION.PageName[id-1];
+              Zone('D',Menu->Wifi.PageName[id-1]);
+              title[1]=Menu->Wifi.PageName[id-1];
               break;
       case 5:  
               this->setTextSize(2);
@@ -168,30 +169,61 @@ void Oled::MeNu()
               
     }
   }
-  else if(!(page&0x000f))
+  else if(!(page&0x000f))                   //--------------------------------------> SUB PAGE 
   {
     Zone('A',title[1]);
     switch ((page&0xff00)>>8)
     {
       case 0x21:  
               this->setTextSize(1);
-              Zone('D'
-              Zone('D',Menu->CONNECTION.Wifi[id-1].DeviceName.c_str());
+              Zone('D',Menu->Wifi.AvaibleNetworks[id-1].DeviceName.c_str());
               break;
       case 0x22:  
+              this->clearDisplay();
               this->setTextSize(1);
-              Zone('D',Menu->CONNECTION.PageName[id-1]);
+              this->setCursor(0,0);
+              this->print("name: ");
+              this->println(Menu->Wifi.NetworkInfo.DeviceName);
+              this->print("ip: ");
+              this->println(Menu->Wifi.NetworkInfo.ip);
+              this->print("signal: ");
+              this->println(Menu->Wifi.NetworkInfo.SignalStrength);
+              this->print("mac:");
+              this->println(Menu->Wifi.NetworkInfo.Mac);
+              this->display();
               break;
       case 0x23:  
-              this->setTextSize(2);
-              Zone('D',Menu->SYSTEM.PageName[id-1]);
+              this->setTextSize(1);
+              clearZone(zone.D.x,zone.D.y,zone.D.xf,zone.D.yf);
+              this->setCursor(zone.D.x,zone.D.y); 
+              this->print("name: ");
+              this->println(Menu->Wifi.AccessPoint.DeviceName);
+              this->print("ip: ");
+              this->println(Menu->Wifi.AccessPoint.IP);
+              this->print("mac:");
+              this->println(Menu->Wifi.AccessPoint.Mac);
+              this->display();              
+              break;   
+      case 0x51:
+              this->setTextSize(1);
+              clearZone(zone.D.x,zone.D.y,zone.D.xf,zone.D.yf);
+              this->setCursor(zone.D.x,zone.D.y); 
+              this->println(Menu->SYSTEM.About.DeviceName);
+              this->print("Model: ");
+              this->println(Menu->SYSTEM.About.Model);
+              this->display();              
+              break;
+      case 0x52:
+              this->setTextSize(1);
+              Zone('D',Menu->SYSTEM.Update.c_str());
               break;    
+
               
     };
   }
 
 
-Serial.println((page&0xff00)>>8,HEX);
+Serial.println(page,HEX);
 
   
   

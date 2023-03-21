@@ -73,7 +73,7 @@ void EspNow::listenner() {
 
 }
 
-void EspNow::Pairing(void) {
+void EspNow::Pairing(void) {                                                         // else temporelle
   // configure device AP mode
   WiFi.mode(WIFI_AP);  
   String SSID = SlaveName + Prefix;
@@ -82,7 +82,9 @@ void EspNow::Pairing(void) {
   menu->ESP_NOW.PairingMode.DeviceName=SSID;
   menu->ESP_NOW.PairingMode.DeviceMac=WiFi.macAddress();
 
-  
+  menu->Wifi.AccessPoint.IP= WiFi.softAPIP();                                        // temporelle 
+  menu->Wifi.AccessPoint.DeviceName=SSID;
+  menu->Wifi.AccessPoint.Mac=WiFi.macAddress();
   if (!result) {
     Serial.println("AP Config failed.");
        // menu->ESP_NOW.PairingMode.status_paired=failed;

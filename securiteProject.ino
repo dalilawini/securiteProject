@@ -77,12 +77,15 @@ Display->Logo();
 
  //espnow->configDeviceAP(); //for test find mac_id for master
  //delay(5000);master
+
+
+
 espnow->Prefix=" 2";
  espnow->InitESPNow();
 //espnow->ScanForSlave();     //master
 espnow->send_cb(OnDataSent);//master
 
-//espnow->Pairing(); //slave
+espnow->Pairing(); //slave
 espnow->recv_cb(OnDataRecv);//slave
  pinMode(16,OUTPUT);
 

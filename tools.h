@@ -1,7 +1,8 @@
-#ifndef TOOLS1_H
-#define TOOLS1_H
+#ifndef TOOLS_H
+#define TOOLS_H
 
 #include <Arduino.h>
+#include <IPAddress.h>
 
 #define L_D 20    //lenght data 
 //---------------ESP_NOw-----------------
@@ -82,21 +83,28 @@ struct Info2EspNow PairingMode;
 
 struct  DataConnection{
 String DeviceName;
-String IP;
-int Mac;
+IPAddress IP;
+String Mac;
 };
 
-struct  DataWifi{
+struct  DataWifi_1{
 String DeviceName;
-String Mac;
 int  SignalStrength;
 };
 
-struct Connection {
-const char* Name ="CONNECTION";
-const char*PageName[3]={"Wifi","Avaible Devices","Access Point"};
-struct DataWifi Wifi[20];
-uint8_t AvaibleDevices;
+struct  DataWifi_2{
+String DeviceName;
+String Mac;
+IPAddress ip;
+int  SignalStrength;
+};
+
+struct WIFI {
+const char* Name ="Wifi";
+const char*PageName[3]={"Avaible networks","Network Info","Access Point"};
+struct DataWifi_1 AvaibleNetworks[20];
+uint8_t ScanResult;
+struct DataWifi_2 NetworkInfo;
 struct DataConnection  AccessPoint;
 };
 
@@ -118,25 +126,26 @@ int TimeLeft;
 };
 
 struct  InfoSystem  {
-char* DeviceName;
-char* Model;
-char* Mac;
-char* Version;
-char* SN;
+String DeviceName="InfraRedSecurity";
+String Model="NouDa_V0";
+String Bord="esp8266";
+String Mac;
+String Version="1.0.0.1";
+String SN="N230896D10119500";
 };
 
 struct system {
 const char* Name ="SYSTEM";
 const char* PageName[2]={"About","Update"};
 struct InfoSystem About;
-int Update;
+String Update="Up To Date ";
 };
 
 
 
 typedef struct MENU {
 struct esp_now ESP_NOW;
-struct Connection CONNECTION;
+struct WIFI Wifi;
 struct ir IR;
 struct battery BATTERY;
 struct system SYSTEM;

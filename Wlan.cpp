@@ -4,6 +4,7 @@
  Wlan::Wlan(MENU* menu)
 {
 this->menu=menu;
+menu->SYSTEM.About.Mac=WiFi.macAddress();
 }
 
 char* Wlan::getSsid()
@@ -35,13 +36,17 @@ bool Wlan::connect()
   this->LoadWifiDesvices();
   WiFi.begin(ssid, password);
 
-  //this->wifi_init();
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
+  menu->Wifi.NetworkInfo.DeviceName=WiFi.SSID();
+  menu->Wifi.NetworkInfo.ip=WiFi.localIP();
+  menu->Wifi.NetworkInfo.SignalStrength=WiFi.RSSI();
+  menu->Wifi.NetworkInfo.Mac=WiFi.BSSIDstr();
+ // WiFi.BSSIDstr(i);
 
-  //this->wifi_connect();
+
 
   return true;
  }
@@ -51,13 +56,12 @@ void Wlan::LoadWifiDesvices()
 {
   
 uint8_t DevicesNumber = WiFi.scanNetworks();
-menu->CONNECTION.AvaibleDevices=DevicesNumber;
+menu->Wifi.ScanResult=DevicesNumber;
 for(int i=0;i<DevicesNumber;i++)
 {
 
-menu->CONNECTION.Wifi[i].DeviceName=WiFi.SSID(i);
-menu->CONNECTION.Wifi[i].Mac=WiFi.BSSIDstr(i);
-menu->CONNECTION.Wifi[i].SignalStrength=WiFi.RSSI(i);
+menu->Wifi.AvaibleNetworks[i].DeviceName=WiFi.SSID(i);
+menu->Wifi.AvaibleNetworks[i].SignalStrength=WiFi.RSSI(i);
 }
 
 }
