@@ -9,6 +9,27 @@ EspNow::~EspNow()
 {
 }
 
+void EspNow::process(enum esp_now_Mode mode) {
+
+  if(millis() - previousTimeProcess > 30000) 
+  {
+    switch (mode)
+    {
+      case AvaibleDevices : ScanForSlave();
+                            break;
+      case PairedDevices   :
+                            break;
+      case PairingMode   :
+                            break;
+  
+
+    }
+  previousTimeProcess=millis();
+  }
+  
+}
+
+
 void EspNow::actionRequest(uint8_t id ) {
   
   if(menu->ESP_NOW.AvaibleDevices[id].status!=paired)
@@ -134,6 +155,8 @@ void EspNow::ScanForSlave() {
 
   if (scanResults == 0) {
     Serial.println("No WiFi devices in AP Mode found");
+    menu->ESP_NOW.AvaibleDevices[0].Name = "No WiFi Devices Found";
+
   } 
   else 
     {
@@ -147,7 +170,7 @@ void EspNow::ScanForSlave() {
             delay(10);
             // Check if the current device starts with Slave
             if(WiFi.SSID(i).indexOf(SlaveName)== 0)
-            {
+            { 
                 // Print SSID and RSSI for each device found
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].id=SlaveCnt;
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].Name= WiFi.SSID(i);
@@ -180,7 +203,11 @@ void EspNow::ScanForSlave() {
             Serial.println("");
         }
         else 
+       { 
         Serial.println("No Slave Found, trying again.");
+        menu->ESP_NOW.AvaibleDevices[0].Name = "No Slave Found";
+       }
+
   
     }
   menu->ESP_NOW.NumberOfAvaibleDevices=SlaveCnt;

@@ -71,14 +71,20 @@ struct Info3EspNow Info;
 };
 
 
+enum esp_now_Mode{
+  AvaibleDevices=1,
+  PairedDevices,
+  PairingMode
+};
 
 struct  esp_now{
 const char* Name ="ESP_NOW";
 const char* PageName[3]={"Avaible Devices","Paired Devices","Pairing Mode"};
-struct Esp_Now P_Device[20];
+enum esp_now_Mode Mode;
 struct Info1EspNow AvaibleDevices[20]= {};
-uint8_t NumberOfAvaibleDevices;
+struct Esp_Now P_Device[20];
 struct Info2EspNow PairingMode;
+uint8_t NumberOfAvaibleDevices;
 };
 
 struct  DataConnection{

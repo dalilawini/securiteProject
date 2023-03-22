@@ -13,6 +13,8 @@ Oled::Oled(MENU* menu_):Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLE
    menu[2]= Menu->IR.Name;
    menu[3]= Menu->BATTERY.Name;
    menu[4]= Menu->SYSTEM.Name;
+   Menu->ESP_NOW.AvaibleDevices[0].Name = "Scaninng ...";
+
 
 }
 
@@ -137,6 +139,9 @@ void Oled::MeNu()
    }
    
    page=BasePage+(id<<page_jump);
+   Serial.println(page,HEX);
+d=0;
+  }
 
   if(!(page&0x0fff))                       //--------------------------------------> Menu 
   {    
@@ -174,6 +179,22 @@ void Oled::MeNu()
     Zone('A',title[1]);
     switch ((page&0xff00)>>8)
     {
+      case 0x11:
+              this->setTextSize(1);
+              Menu->ESP_NOW.Mode=AvaibleDevices;
+              Zone('D',Menu->ESP_NOW.AvaibleDevices[id-1].Name.c_str());
+              title[2]=Menu->ESP_NOW.AvaibleDevices[id-1].Name.c_str();
+              break;
+      case 0x12:
+              this->setTextSize(1);
+              Menu->ESP_NOW.Mode=PairedDevices;
+              Zone('D',Menu->ESP_NOW.P_Device[id-1].Info.Name.c_str());
+              break;
+      case 0x13:
+              this->setTextSize(1);
+              Menu->ESP_NOW.Mode=PairingMode;
+              //Zone('D',Menu->ESP_NOW.PairingMode. .AvaibleDevices[id-1].Name.c_str());
+              break;
       case 0x21:  
               this->setTextSize(1);
               Zone('D',Menu->Wifi.AvaibleNetworks[id-1].DeviceName.c_str());
@@ -194,9 +215,7 @@ void Oled::MeNu()
               break;
       case 0x23:  
               this->setTextSize(1);
-              clearZone(zone.D.x,zone.D.y,zone.D.xf,zone.D.yf);
-              this->setCursor(zone.D.x,zone.D.y); 
-              this->print("name: ");
+              Zone('D',(const char *)"name: ");
               this->println(Menu->Wifi.AccessPoint.DeviceName);
               this->print("ip: ");
               this->println(Menu->Wifi.AccessPoint.IP);
@@ -221,26 +240,32 @@ void Oled::MeNu()
               
     };
   }
+  else if(page&0x000f)                   //--------------------------------------> SUB PAGE 
+  {
+    Zone('A',title[2]);
+    switch ((page&0xff00)>>8)
+    {
+      case 0x11:              
+                this->setTextSize(1);
+                Zone('D',Menu->ESP_NOW.AvaibleDevices[((page&0x00f0)>>4)-1].BSSIDstr.c_str());
+                break;
 
 
-Serial.println(page,HEX);
-
-  
-  
+    };
+  }
         
 
-    //Zone('A', page[id_back[0]][id_back[1]]);
+          //Zone('A', page[id_back[0]][id_back[1]]);
 
-  // Serial.print(page[0]);
-  /* for(int i=0;i<3;i++)
-   Serial.print(id[i]);
-      Serial.println("");
+        // Serial.print(page[0]);
+        /* for(int i=0;i<3;i++)
+        Serial.print(id[i]);
+            Serial.println("");
 
-   */
-  // Display->Zone('D', page[id[0]][id[1]]);
-     d=0;
+        */
+        // Display->Zone('D', page[id[0]][id[1]]);
 
-  }
+  
 }
 
 

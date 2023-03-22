@@ -99,6 +99,7 @@ public:
   int SlaveCnt = 0;
   uint8_t MMAAC[6];
   unsigned long previousTimeSend[20]; // Variable to store the previous time
+  unsigned long previousTimeProcess=0;
   unsigned long previousTimeCheck = 0; // Variable to store the previous time
 
   const unsigned long intervalSend = 1000; 
@@ -108,6 +109,7 @@ public:
 
     EspNow(MENU* menu);
     ~EspNow();
+    void process(enum esp_now_Mode mode);
     //void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) ;
     void InitESPNow() ;
     void ScanForSlave() ;
