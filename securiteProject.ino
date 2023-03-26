@@ -42,6 +42,7 @@ void OnDataSent( uint8_t *mac_addr, uint8_t status) {
 void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t data_len) {
   espnow->recv_cb(mac_addr, data,data_len);
 }
+
 uint8_t device=1;
 char data[]="im Master"; 
 
@@ -121,7 +122,7 @@ for(int i=0;i<Menu.ESP_NOW.NumberOfAvaibleDevices;i++)
 if(device ==2)
 {
 espnow->Pairing();
-Menu.ESP_NOW.PairingMode.status_paired=IDL;
+Menu.ESP_NOW.PairingMode.status_paired=paired;
     Serial.print("name: ");
     Serial.println(Menu.ESP_NOW.PairingMode.DeviceName);
     Serial.print("mac: ");
@@ -149,12 +150,12 @@ Serial.println(Menu.CONNECTION.Wifi[i].SignalStrength);
 
 
 
-
 void loop() {
 
 espnow->process(Menu.ESP_NOW.Mode);
 
 Display->MeNu();
+//espnow->listenner();
 
 
   }

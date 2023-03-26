@@ -38,10 +38,11 @@ enum status_{
 
 struct Info1EspNow {
   uint8_t id;
+
   String Name ;
   enum EspNow_code Data_U8;
   int32_t RSSI;     // wifi Signal Strength Indicato
-  enum status_ status=ready;
+  enum status_ status=IDL;
   String BSSIDstr ; //mac
   uint8_t MacAddres[6]; 
   uint8_t channel ;
@@ -72,7 +73,8 @@ struct Info3EspNow Info;
 
 
 enum esp_now_Mode{
-  AvaibleDevices=1,
+  idl=0,
+  AvaibleDevices,
   PairedDevices,
   PairingMode
 };
@@ -81,6 +83,7 @@ struct  esp_now{
 const char* Name ="ESP_NOW";
 const char* PageName[3]={"Avaible Devices","Paired Devices","Pairing Mode"};
 enum esp_now_Mode Mode;
+int8_t AvaibleDevices_id=-1;
 struct Info1EspNow AvaibleDevices[20]= {};
 struct Esp_Now P_Device[20];
 struct Info2EspNow PairingMode;

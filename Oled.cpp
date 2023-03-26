@@ -183,6 +183,8 @@ d=0;
               this->setTextSize(1);
               Menu->ESP_NOW.Mode=AvaibleDevices;
               Zone('D',Menu->ESP_NOW.AvaibleDevices[id-1].Name.c_str());
+              Menu->ESP_NOW.AvaibleDevices_id=-1;
+              Menu->ESP_NOW.AvaibleDevices[id-1].status=ready;              
               title[2]=Menu->ESP_NOW.AvaibleDevices[id-1].Name.c_str();
               break;
       case 0x12:
@@ -244,17 +246,25 @@ d=0;
   {
     Zone('A',title[2]);
     switch ((page&0xff00)>>8)
-    {
+    {  
       case 0x11:              
-                this->setTextSize(1);
-                Zone('D',Menu->ESP_NOW.AvaibleDevices[((page&0x00f0)>>4)-1].BSSIDstr.c_str());
+                this->setTextSize(2);
+                switch (Menu->ESP_NOW.AvaibleDevices[((page&0x00f0)>>4)-1].status)
+                {
+                  case ready  : Zone('D',"Connecting ..."); break;
+                  case paired : Zone('D',"paired");         break;
+                  case refused: Zone('D',"refused");        break;
+                  case failed : Zone('D',"failed");         break;
+
+                };
+                Menu->ESP_NOW.AvaibleDevices_id=((page&0x00f0)>>4)-1;
+                Menu->ESP_NOW.Mode=idl;
                 break;
 
 
     };
   }
         
-
           //Zone('A', page[id_back[0]][id_back[1]]);
 
         // Serial.print(page[0]);

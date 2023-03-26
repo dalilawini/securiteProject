@@ -15,36 +15,30 @@ void EspNow::process(enum esp_now_Mode mode) {
   {
     switch (mode)
     {
-      case AvaibleDevices : ScanForSlave();
+      case AvaibleDevices : ScanForSlave();                      
                             break;
       case PairedDevices   :
                             break;
-      case PairingMode   :
+      case PairingMode   : 
                             break;
   
 
     }
   previousTimeProcess=millis();
   }
-  
+
+  if(menu->ESP_NOW.AvaibleDevices_id >=0)
+    sendRequest(menu->ESP_NOW.AvaibleDevices_id);
 }
 
 
-void EspNow::actionRequest(uint8_t id ) {
-  
-  if(menu->ESP_NOW.AvaibleDevices[id].status!=paired)
-    {
-      menu->ESP_NOW.AvaibleDevices[id].status=ready;
-      check_send[id]=0;
-    }
-}
+
 
 void EspNow::sendRequest(uint8_t id ) {
     enum EspNow_code send;
 
    if(menu->ESP_NOW.AvaibleDevices[id].status==ready)
-   {
-
+   {      
     if(millis() - previousTimeSend[id] > intervalSend) 
       {
         send=pairingRequest;
@@ -74,6 +68,8 @@ void EspNow::sendRequest(uint8_t id ) {
          }
 
     }
+    else 
+    check_send[id]=0;
 }
 
 void EspNow::listenner() {
@@ -123,7 +119,7 @@ void EspNow::InitESPNow(void) {
   if (esp_now_init() == ESP_OK) {
     Serial.println("ESPNow Init Success");
     esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
-    this->manageSlave();
+  //  this->manageSlave();
 
 
   }
@@ -177,6 +173,8 @@ void EspNow::ScanForSlave() {
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].RSSI = WiFi.RSSI(i);
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].BSSIDstr = WiFi.BSSIDstr(i);
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].channel=1;
+                memset(menu->ESP_NOW.AvaibleDevices[SlaveCnt].encrypt,1,6);
+                menu->ESP_NOW.AvaibleDevices[SlaveCnt].encrypt_len=6;
                 // Get BSSID => Mac Address of the Slave
                 int mac[6];
 
@@ -217,36 +215,41 @@ void EspNow::ScanForSlave() {
 
 // Check if the slave is already paired with the master.
 // If not, pair the slave with master
-void EspNow::manageSlave() 
-{
-  if (SlaveCnt > 0) 
-  {
-    for (int i = 0; i < SlaveCnt; i++) 
-    {
+void EspNow::manageSlave(uint8_t id) 
+{     EEPROM.begin(128);
+       uint8_t value=10;
+      EEPROM.put(0,value);
+       EEPROM.commit();
+        uint8_t newValue;
+  EEPROM.get(0, newValue);
+  Serial.print("value :");
+  Serial.println(newValue);
+/*
+ 
+ 
       Serial.print("Processing: ");
       for (int ii = 0; ii < 6; ++ii )
       {
-        Serial.print((uint8_t) menu->ESP_NOW.AvaibleDevices[i].MacAddres[ii], HEX);
+        Serial.print((uint8_t) menu->ESP_NOW.AvaibleDevices[id].MacAddres[ii], HEX);
         if (ii != 5) Serial.print(":");
       }
-      Serial.print(" Status: ");
+      Serial.println(" Status: ");
       // check if the peer exists
-      bool exists = esp_now_is_peer_exist(menu->ESP_NOW.AvaibleDevices[i].MacAddres);
+      uint8_t  exists = esp_now_is_peer_exist(menu->ESP_NOW.AvaibleDevices[id].MacAddres);
+      Serial.print("esp_now_is_peer_exist ->RETURN : ");
+      Serial.println(exists);
       if (exists) 
         // Slave already paired.
         Serial.println("Already Paired");
       else 
         // Slave not paired, attempt pair
        {
-         esp_now_add_peer(menu->ESP_NOW.AvaibleDevices[i].MacAddres, ESP_NOW_ROLE_SLAVE, menu->ESP_NOW.AvaibleDevices[i].channel, menu->ESP_NOW.AvaibleDevices[i].encrypt, menu->ESP_NOW.AvaibleDevices[i].encrypt_len);
-          Serial.println("Paired Successfully");
+       
+         int ret =esp_now_add_peer(menu->ESP_NOW.AvaibleDevices[id].MacAddres, ESP_NOW_ROLE_MAX, menu->ESP_NOW.AvaibleDevices[id].channel, menu->ESP_NOW.AvaibleDevices[id].encrypt, menu->ESP_NOW.AvaibleDevices[id].encrypt_len);
+          Serial.print("ret :");
+          Serial.println(ret);
        }
-    }
-  }
-  else 
-    // No slave found to process
-    Serial.println("No Slave found to process");
-  
+       */
 }
 
 //------------------------Function for send data -------------------
