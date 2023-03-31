@@ -98,7 +98,7 @@ void Oled::Zone(char ZoNe,const char* txt)
 
     case 'D': clearZone(zone.D.x,zone.D.y,zone.D.xf,zone.D.yf);
               this->setCursor(zone.D.x,zone.D.y); 
-              this->println(txt);
+              this->print(txt);
               this->display();
               break;
   }
@@ -165,6 +165,14 @@ d=0;
               this->setTextSize(1);
               Zone('D',Menu->Wifi.PageName[id-1]);
               title[1]=Menu->Wifi.PageName[id-1];
+              break;
+      case 3:
+              this->setTextSize(1);              
+              Zone('D',"Send: ");
+              this->println(Menu->IR.Data_send);
+              this->print("Recive: ");
+              this->println(Menu->IR.Data_Reciv);
+              this->display();
               break;
       case 5:  
               this->setTextSize(2);
@@ -254,7 +262,7 @@ d=0;
                   case ready  : Zone('D',"Connecting ..."); break;
                   case paired : Zone('D',"paired");         break;
                   case refused: Zone('D',"refused");        break;
-                  case failed : Zone('D',"failed");         break;
+                  case failed : Zone('D',"failed"); page=0x1100;     break;
 
                 };
                 Menu->ESP_NOW.AvaibleDevices_id=((page&0x00f0)>>4)-1;

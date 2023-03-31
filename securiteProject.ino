@@ -7,9 +7,12 @@
 #include "Wlan.h"
 #include "Time.h"
 #include "tools.h"
+#include "IR.h"
+
 
 //----------------------class instance ----------------------
  MENU Menu;
+IR* ir=new IR(&Menu);
 EspNow* espnow=new EspNow(&Menu);
 Wlan* WIFI=new Wlan(&Menu);
 
@@ -18,21 +21,6 @@ Oled* Display =new Oled(&Menu);
 Time* time_=new Time();
 Battery* battery=new Battery();
 Fota* FOTA=new Fota();
-
-
-//----------IR-----------
-#include <IRremoteESP8266.h>
-#include <IRrecv.h>
-#include <IRutils.h>
-//*****************Define Variable *****************
-
-
-//*****************Global Function *****************
-
-//----------IR-----------gl:
-const uint16_t IR_RecvPin = 14;
-IRrecv irrecv(IR_RecvPin); // Create an IRrecv object on pin 4
-decode_results results;
 
 
 // CALL BACK FUNCTION FOR ESPNOW ( this function can't call in other place just you can it here )
@@ -69,7 +57,8 @@ void setup() {
 Display->Logo();
 //battery->Charge();
  // FOTA->begin();
- //irrecv.enableIRIn(); // Start the IR receiver
+
+ ir->enableIRIn(); // Start the IR receiver
  WIFI->LoadWifiDesvices();
  //WIFI->connect();
  //FOTA->check_for_update();
@@ -130,20 +119,7 @@ Menu.ESP_NOW.PairingMode.status_paired=paired;
 
  
 }
-/*
-Serial.print("page name:");
-Serial.println(Menu.CONNECTION.PageName);
 
-for(int i=0;i<Menu.CONNECTION.AvaibleDevices;i++)
-{
-Serial.print("name: ");
-Serial.println(Menu.CONNECTION.Wifi[i].DeviceName);
-Serial.print("Mac: ");
-Serial.println(Menu.CONNECTION.Wifi[i].Mac);
-Serial.print("Signal Strength: ");
-Serial.println(Menu.CONNECTION.Wifi[i].SignalStrength);
-}
-*/
 
 
 }
@@ -153,11 +129,10 @@ Serial.println(Menu.CONNECTION.Wifi[i].SignalStrength);
 void loop() {
 
 espnow->process(Menu.ESP_NOW.Mode);
-
+ir->process();
 Display->MeNu();
-//espnow->listenner();
 
-
+delay(100);
   }
 
 
@@ -166,42 +141,12 @@ Display->MeNu();
 
 
 
-
-
-       //  espnow->actionRequest(0);
-
- /*if (!digitalRead(0)) 
-    {
-      click_id++;
-      delay(250);
-    }
-
-  Display->clearDisplay();
-  Display->setTextSize(1);
-  Display->setCursor(0,0);
-  Display->setCursor(0,10);
-  Display->setTextSize(1);
-*/
 //time_->update();
 //time_->TimeDisplay();
 
 
 
-/*
-  switch (click_id)
-  {
 
-    case 1: Display->print("  ESP_NOW");break;
-    case 2: Display->print("CONNECTION");break;
-    case 3: Display->print("  IR");break;
-    case 4: Display->print("  BATTERY");break;
-    case 5: Display->print("  SYSTEM");break;
-    default : click_id=1;
-
-  }
-
-   }
-}*/
 /*
 if(device ==2)
 {
@@ -320,41 +265,9 @@ delay(1000);
 }
 */
 /*
-  if (irrecv.decode(&results)) {
-    irrecv.resume();  // Receive the next value
-  }
-  Display->IRcode(resultToHexidecimal(&results));
-  if(resultToHexidecimal(&results)=="0x00FFE01F")
-  {
-   digitalWrite(16,1);
-   delay(1000);
-  
-  }
+
      digitalWrite(16,0);
 
 */
 
-/*
-void ESP_NOW(void)
-{ 
-  Display->setCursor(0,14);
-  Display->setTextSize(2);
-  Display->setTextColor(SSD1306_WHITE);
-  Display->print("  ESP_NOW");
-  while (0)
-   {
-    Display->clearDisplay();
-    Display->setTextSize(1);
-    Display->setCursor(10,0);
-    Display->println("Esp_now :");
-    Display->setCursor(10,14);
-    click_id==1 ? Display->setTextColor(SSD1306_BLACK, SSD1306_WHITE):Display->setTextColor(SSD1306_WHITE);
-    Display->println("* Paired devices");
-    Display->setCursor(10,24);
-    click_id==2 ? Display->setTextColor(SSD1306_BLACK, SSD1306_WHITE):Display->setTextColor(SSD1306_WHITE);
-    Display->println("* Avaible devices");
-    Display->display();
 
-   }
-}
-*/

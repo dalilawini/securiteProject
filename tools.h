@@ -122,8 +122,8 @@ struct DataConnection  AccessPoint;
 
 struct ir {
 const char* Name ="IR";
-int Data_send;
-int Data_Reciv;
+String Data_send;
+String Data_Reciv;
 bool SecurityStatus;
 };
 
