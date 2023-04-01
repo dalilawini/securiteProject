@@ -212,15 +212,79 @@ void EspNow::ScanForSlave() {
   WiFi.scanDelete();
 }
 
+void EspNow::SaveMEM(uint8_t id,String name,uint8_t* mac)
+{  
+   Serial.println("data: ");
+  uint8_t address=0;
+
+  EEPROM.begin(256);
+
+  address=id*23;
+  EEPROM.put(address,id);
+
+  address+=1;
+  writeStringToEEPROM(address,name);
+  Serial.println(readStringFromEEPROM(address));
+
+  address+=17;
+  writeArrayToEEPROM(address,mac,6);
+  uint8_t DATAA[6];
+  readArrayFromEEPROM(address,DATAA,6);
+    for (int ii = 0; ii < 6; ++ii )
+      {
+        Serial.print((uint8_t) DATAA[ii], HEX);
+        if (ii != 5) Serial.print(":");
+      }
+
+
+}
+
+// Function to write a string value to EEPROM
+void EspNow::writeStringToEEPROM(int address, String value) {
+  for (int i = 0; i < value.length(); i++) {
+    EEPROM.write(address + i, value[i]);
+  }
+  EEPROM.write(address + value.length(), '\0'); // Null terminate the string
+  EEPROM.commit();
+}
+
+// Function to read a string value from EEPROM
+String EspNow::readStringFromEEPROM(int address) {
+  String value = "";
+  char c = EEPROM.read(address);
+  int i = 0;
+  while (c != '\0' && i < 512) {
+    value += c;
+    i++;
+    c = EEPROM.read(address + i);
+  }
+  return value;
+}
+
+// Function to write a uint8_t array to EEPROM
+void EspNow::writeArrayToEEPROM(int address, uint8_t *data, size_t size) {
+  for (int i = 0; i < size; i++) {
+    EEPROM.write(address + i, data[i]);
+  }
+  EEPROM.commit();
+}
+
+// Function to read a uint8_t array from EEPROM
+void EspNow::readArrayFromEEPROM(int address, uint8_t *data, size_t size) {
+  for (int i = 0; i < size; i++) {
+    data[i] = EEPROM.read(address + i);
+  }
+}
+
+
 
 // Check if the slave is already paired with the master.
 // If not, pair the slave with master
 void EspNow::manageSlave(uint8_t id) 
-{     EEPROM.begin(128);
-       uint8_t value=10;
+{    
+    /*   uint8_t value=10;
       EEPROM.put(0,value);
        EEPROM.commit();
-        uint8_t newValue;
   EEPROM.get(0, newValue);
   Serial.print("value :");
   Serial.println(newValue);
