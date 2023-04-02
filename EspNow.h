@@ -92,10 +92,18 @@ private:
     MENU* menu;
     void updateRecive();
     void updateSend();
+    void writeArrayToEEPROM(int address, uint8_t *data, size_t size) ;
+    void readArrayFromEEPROM(int address, uint8_t *data, size_t size) ;
+    void writeStringToEEPROM(int address, String value) ;
+    String readStringFromEEPROM(int address) ;
+
+
 
 
 
 public:
+    void SaveMEM(uint8_t id,String name,uint8_t* mac);
+
   int SlaveCnt = 0;
   uint8_t MMAAC[6];
   unsigned long previousTimeSend[20]; // Variable to store the previous time
