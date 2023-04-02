@@ -61,6 +61,7 @@ uint8_t PairMac[6];
 };
 
 struct Info3EspNow {
+uint8_t id;
 uint8_t status;
 String Name ;
 uint8_t MacAddres[6];

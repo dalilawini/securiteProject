@@ -199,6 +199,15 @@ d=0;
               this->setTextSize(1);
               Menu->ESP_NOW.Mode=PairedDevices;
               Zone('D',Menu->ESP_NOW.P_Device[id-1].Info.Name.c_str());
+
+              this->println("");
+              for (int s = 0; s < 6; s++ )
+              {
+                this->print(Menu->ESP_NOW.P_Device[id-1].Info.MacAddres[s]);
+                if (s != 5) this->print(":");
+              }
+              
+              this->display();
               break;
       case 0x13:
               this->setTextSize(1);

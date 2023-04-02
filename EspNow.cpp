@@ -8,7 +8,10 @@ EspNow::EspNow(MENU* menu)
 EspNow::~EspNow()
 {
 }
-
+void EspNow::begin()
+{
+  loadFromMEM();
+}
 void EspNow::process(enum esp_now_Mode mode) {
 
   if(millis() - previousTimeProcess > 30000) 
@@ -53,6 +56,7 @@ void EspNow::sendRequest(uint8_t id ) {
         send=pairingIDL;
         esp_now_send( menu->ESP_NOW.AvaibleDevices[id].MacAddres,(u8*)&send,1);
         check_send[id]=0;
+        SaveMEM(menu->ESP_NOW.AvaibleDevices[id].Name , menu->ESP_NOW.AvaibleDevices[id].MacAddres);
       }
        if(menu->ESP_NOW.AvaibleDevices[id].Data_U8==pairingRefused)
       {
@@ -157,6 +161,7 @@ void EspNow::ScanForSlave() {
   else 
     {
         Serial.print("Found : "); Serial.print(scanResults); Serial.println(" devices ");
+
         for (int i = 0; i < scanResults; ++i) 
         {
             if (PRINTSCANRESULTS) 
@@ -165,8 +170,9 @@ void EspNow::ScanForSlave() {
             }
             delay(10);
             // Check if the current device starts with Slave
+            
             if(WiFi.SSID(i).indexOf(SlaveName)== 0)
-            { 
+            {
                 // Print SSID and RSSI for each device found
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].id=SlaveCnt;
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].Name= WiFi.SSID(i);
@@ -188,10 +194,12 @@ void EspNow::ScanForSlave() {
                 }
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].channel = CHANNEL; // pick a channel
                 menu->ESP_NOW.AvaibleDevices[SlaveCnt].encrypt[0] = 0; // no encryption
-                SlaveCnt++;
 
+                if (! isExsitPairing(menu->ESP_NOW.AvaibleDevices[SlaveCnt].MacAddres))
+                  SlaveCnt++;
             }
         }
+
         Serial.println("");
         if(SlaveCnt>0)
         {
@@ -211,72 +219,6 @@ void EspNow::ScanForSlave() {
   menu->ESP_NOW.NumberOfAvaibleDevices=SlaveCnt;
   WiFi.scanDelete();
 }
-
-void EspNow::SaveMEM(uint8_t id,String name,uint8_t* mac)
-{  
-   Serial.println("data: ");
-  uint8_t address=0;
-
-  EEPROM.begin(256);
-
-  address=id*23;
-  EEPROM.put(address,id);
-
-  address+=1;
-  writeStringToEEPROM(address,name);
-  Serial.println(readStringFromEEPROM(address));
-
-  address+=17;
-  writeArrayToEEPROM(address,mac,6);
-  uint8_t DATAA[6];
-  readArrayFromEEPROM(address,DATAA,6);
-    for (int ii = 0; ii < 6; ++ii )
-      {
-        Serial.print((uint8_t) DATAA[ii], HEX);
-        if (ii != 5) Serial.print(":");
-      }
-
-
-}
-
-// Function to write a string value to EEPROM
-void EspNow::writeStringToEEPROM(int address, String value) {
-  for (int i = 0; i < value.length(); i++) {
-    EEPROM.write(address + i, value[i]);
-  }
-  EEPROM.write(address + value.length(), '\0'); // Null terminate the string
-  EEPROM.commit();
-}
-
-// Function to read a string value from EEPROM
-String EspNow::readStringFromEEPROM(int address) {
-  String value = "";
-  char c = EEPROM.read(address);
-  int i = 0;
-  while (c != '\0' && i < 512) {
-    value += c;
-    i++;
-    c = EEPROM.read(address + i);
-  }
-  return value;
-}
-
-// Function to write a uint8_t array to EEPROM
-void EspNow::writeArrayToEEPROM(int address, uint8_t *data, size_t size) {
-  for (int i = 0; i < size; i++) {
-    EEPROM.write(address + i, data[i]);
-  }
-  EEPROM.commit();
-}
-
-// Function to read a uint8_t array from EEPROM
-void EspNow::readArrayFromEEPROM(int address, uint8_t *data, size_t size) {
-  for (int i = 0; i < size; i++) {
-    data[i] = EEPROM.read(address + i);
-  }
-}
-
-
 
 // Check if the slave is already paired with the master.
 // If not, pair the slave with master
@@ -364,8 +306,8 @@ void EspNow::send_cb( uint8_t *mac_addr, uint8_t status){
 
   uint8_t id =this->find_id(mac_addr);
   menu->ESP_NOW.P_Device[id].Info.status=status;
-  Serial.print("Last Packet Send from id: "); Serial.println( id);
-  Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  //Serial.print("Last Packet Send from id: "); Serial.println( id);
+  //Serial.print("Last Packet Send Status: "); Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
   //----------------for SENDED data----------------
 
 }
@@ -390,7 +332,7 @@ void EspNow::recv_cb(uint8_t *mac_addr, uint8_t *data, uint8_t data_len){
     device.Recive.data.type= true;
     device.Recive.data.U8=(enum EspNow_code)data[0];
     device.Recive.data_len= data_len;
-    Serial.println("code cb");
+   // Serial.println("code cb");
 
   }
 
@@ -437,15 +379,7 @@ uint8_t* EspNow::find_mac(uint8_t id){
 }
 
 //-----------------------------------------------------------------------------
-void EspNow::LoadPairedDesvices()
-{
 
-}
-
-void EspNow::LoadAvaibleDesvices()
-{
-
-}
 
 
 void EspNow::updateSend()
@@ -491,5 +425,139 @@ void EspNow::updateRecive()
       memset( menu->ESP_NOW.P_Device[device.Recive.id].Data.Recive.str,0,device.Recive.data_len);
 
     }  
-
 }
+
+void EspNow::loadFromMEM()
+{
+  Serial.println("load From MEM");
+  EEPROM.begin(256);
+ 
+  TotalPeerNumber=EEPROM.read(0);
+  Serial.print("Total Peer Number :");
+  Serial.println(TotalPeerNumber);
+
+  for(int i=0;i<TotalPeerNumber;i++)
+  {
+  menu->ESP_NOW.P_Device[i].Info.id = EEPROM.read(block_offset[i]+id_offset);
+  readArrayFromEEPROM(block_offset[i]+mac_offset ,menu->ESP_NOW.P_Device[i].Info.MacAddres ,6);
+  menu->ESP_NOW.P_Device[i].Info.Name = readStringFromEEPROM(block_offset[i]+name_offset);
+  
+  Serial.print("id :");
+  Serial.println(menu->ESP_NOW.P_Device[i].Info.id);
+
+  Serial.print("mac :");
+    for (int s = 0; s < 6; s++ )
+        {
+          Serial.print(menu->ESP_NOW.P_Device[i].Info.MacAddres[s],HEX);
+          if (s != 5) Serial.print(":");
+        }
+  Serial.println("");
+  Serial.print("name: ");
+  Serial.println(menu->ESP_NOW.P_Device[i].Info.Name);
+
+  }
+}
+
+
+void EspNow::SaveMEM(String name,uint8_t* mac)
+{  
+  uint8_t address=0;
+
+  Serial.println("Mem Writing ..");
+  EEPROM.write(block_offset[TotalPeerNumber],TotalPeerNumber);     //Save Id
+
+  Serial.print("id :");
+  uint8_t iid[1];
+  readArrayFromEEPROM(block_offset[TotalPeerNumber],iid,1);
+  Serial.println(iid[0]);
+
+
+  writeStringToEEPROM(block_offset[TotalPeerNumber]+name_offset,name);            //Save name
+
+  Serial.print("name :");
+  Serial.println(readStringFromEEPROM(block_offset[TotalPeerNumber]+name_offset));
+
+  writeArrayToEEPROM(block_offset[TotalPeerNumber]+mac_offset,mac,6);            //Save Mac address
+
+  uint8_t DATAA[6];
+  readArrayFromEEPROM(block_offset[TotalPeerNumber]+mac_offset,DATAA,6);
+    for (int ii = 0; ii < 6; ++ii )
+      {
+        Serial.print((uint8_t) DATAA[ii], HEX);
+        if (ii != 5) Serial.print(":");
+      }
+
+  TotalPeerNumber++;
+  EEPROM.write(0,TotalPeerNumber); 
+  EEPROM.commit();
+
+  Serial.println();
+  Serial.print("Total Peer Number Saved :");
+  Serial.println(EEPROM.read(0));
+
+  
+}
+
+
+bool EspNow::isExsitPairing(uint8_t * mac)
+{  
+  Serial.println("check mac");
+   uint8_t check=0;
+   for(int j=0;j<TotalPeerNumber;j++)
+   {
+      for(int i=0 ;i<6;i++)
+      { 
+        if(menu->ESP_NOW.P_Device[j].Info.MacAddres[i]==mac[i])
+          check++;
+      }
+      if(check==6)
+      {
+        Serial.println("mac exist");
+        return true;
+      }
+   } 
+    Serial.println("ready to save");
+    return false;
+    
+}
+
+
+// Function to write a string value to EEPROM
+void EspNow::writeStringToEEPROM(int address, String value) {
+  for (int i = 0; i < value.length(); i++) {
+    EEPROM.write(address + i, value[i]);
+  }
+  EEPROM.write(address + value.length(), '\0'); // Null terminate the string
+  EEPROM.commit();
+}
+
+// Function to read a string value from EEPROM
+String EspNow::readStringFromEEPROM(int address) {
+  String value = "";
+  char c = EEPROM.read(address);
+  int i = 0;
+  while (c != '\0' && i < 512) {
+    value += c;
+    i++;
+    c = EEPROM.read(address + i);
+  }
+  return value;
+}
+
+// Function to write a uint8_t array to EEPROM
+void EspNow::writeArrayToEEPROM(int address, uint8_t *data, size_t size) {
+  for (int i = 0; i < size; i++) {
+    EEPROM.write(address + i, data[i]);
+  }
+  EEPROM.commit();
+}
+
+// Function to read a uint8_t array from EEPROM
+void EspNow::readArrayFromEEPROM(int address, uint8_t *data, size_t size) {
+  for (int i = 0; i < size; i++) {
+    data[i] = EEPROM.read(address + i);
+  }
+}
+
+
+
