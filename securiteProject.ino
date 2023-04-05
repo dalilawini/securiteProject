@@ -119,9 +119,9 @@ Menu.ESP_NOW.PairingMode.status_paired=paired;
 
  
 }
-uint8_t mmmaccc[6]={00,11,22,33,44,55};
-espnow->SaveMEM(1, "dali",mmmaccc);
-
+//uint8_t mmmaccc[6]={00,11,22,33,44,55};
+//espnow->SaveMEM(1, "dali",mmmaccc);
+espnow->begin();
 }
 
 
@@ -129,7 +129,8 @@ espnow->SaveMEM(1, "dali",mmmaccc);
 void loop() {
 
 espnow->process(Menu.ESP_NOW.Mode);
-ir->process();
+//espnow->listenner();
+//ir->process();
 Display->MeNu();
 
 delay(100);

@@ -92,17 +92,28 @@ private:
     MENU* menu;
     void updateRecive();
     void updateSend();
+    uint8_t TotalPeerNumber=0;
     void writeArrayToEEPROM(int address, uint8_t *data, size_t size) ;
     void readArrayFromEEPROM(int address, uint8_t *data, size_t size) ;
     void writeStringToEEPROM(int address, String value) ;
     String readStringFromEEPROM(int address) ;
+    void loadFromMEM();
+    bool isExsitPairing(uint8_t * mac);
+
+
+    uint8_t block_offset[11]={1,24,47,70,93,116,139,162,185,208,231};
+    uint8_t id_offset=0;
+    uint8_t mac_offset=1;
+    uint8_t name_offset=7;
+
+
 
 
 
 
 
 public:
-    void SaveMEM(uint8_t id,String name,uint8_t* mac);
+    void SaveMEM(String name,uint8_t* mac);
 
   int SlaveCnt = 0;
   uint8_t MMAAC[6];
@@ -137,9 +148,8 @@ public:
     void Pairing(void);
     void recv_cb(esp_now_recv_cb_t cp);
     void recv_cb(u8 *mac_addr, u8 *data, u8 len);
-    
-    void LoadPairedDesvices();
-    void LoadAvaibleDesvices();
+    void begin();
+
 
 
     uint8_t PRINTSCANRESULTS = 0;
