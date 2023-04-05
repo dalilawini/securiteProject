@@ -13,6 +13,7 @@ Oled::Oled(MENU* menu_):Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLE
    menu[2]= Menu->IR.Name;
    menu[3]= Menu->BATTERY.Name;
    menu[4]= Menu->SYSTEM.Name;
+   menu[5]= Menu->RESET.Name;
    Menu->ESP_NOW.AvaibleDevices[0].Name = "Scaninng ...";
 
 
@@ -179,6 +180,11 @@ d=0;
               Zone('D',Menu->SYSTEM.PageName[id-1]);
               title[1]=Menu->SYSTEM.PageName[id-1];
               break;    
+      case 6:
+            this->setTextSize(1);
+            Zone('D',"CLEAR DATA");
+            title[1]="CLEAR DATA";
+            break; 
               
     }
   }
@@ -254,8 +260,13 @@ d=0;
       case 0x52:
               this->setTextSize(1);
               Zone('D',Menu->SYSTEM.Update.c_str());
-              break;    
+              break;  
 
+      case 0x61:
+            Menu->ESP_NOW.Mode=resetMode;
+            this->setTextSize(1);
+            Zone('D',"Clear all data user ... ");
+            break;              
               
     };
   }
