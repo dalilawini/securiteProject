@@ -14,15 +14,17 @@ void EspNow::begin()
 }
 void EspNow::process(enum esp_now_Mode mode) {
 
-  if(millis() - previousTimeProcess > 30000) 
+  if((millis() - previousTimeProcess > 10000 ) && mode != idl) 
   {
     switch (mode)
     {
       case AvaibleDevices : ScanForSlave();                      
                             break;
-      case PairedDevices   :
+      case PairedDevices  :
                             break;
-      case PairingMode   : 
+      case PairingMode    : 
+                            break;
+      case resetMode      : ClearEEPROM();
                             break;
   
 
@@ -559,5 +561,14 @@ void EspNow::readArrayFromEEPROM(int address, uint8_t *data, size_t size) {
   }
 }
 
-
+void EspNow::ClearEEPROM()
+{
+  for (int i = 0; i < 258; i++) {
+    EEPROM.write(i,0);
+  }
+  EEPROM.commit();
+  delay(100);
+  ESP.restart();
+  TotalPeerNumber=0;
+}
 

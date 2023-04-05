@@ -99,7 +99,7 @@ private:
     String readStringFromEEPROM(int address) ;
     void loadFromMEM();
     bool isExsitPairing(uint8_t * mac);
-
+    void ClearEEPROM();
 
     uint8_t block_offset[11]={1,24,47,70,93,116,139,162,185,208,231};
     uint8_t id_offset=0;

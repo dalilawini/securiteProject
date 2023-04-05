@@ -77,7 +77,8 @@ enum esp_now_Mode{
   idl=0,
   AvaibleDevices,
   PairedDevices,
-  PairingMode
+  PairingMode,
+  resetMode,
 };
 
 struct  esp_now{
@@ -151,6 +152,11 @@ struct InfoSystem About;
 String Update="Up To Date ";
 };
 
+struct reset {
+const char* Name ="RESET";
+
+};
+
 
 
 typedef struct MENU {
@@ -159,6 +165,7 @@ struct WIFI Wifi;
 struct ir IR;
 struct battery BATTERY;
 struct system SYSTEM;
+struct reset RESET;
 }MENU;
 
 
