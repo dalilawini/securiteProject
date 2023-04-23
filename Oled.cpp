@@ -143,7 +143,6 @@ void Oled::MeNu()
    Serial.println(page,HEX);
 d=0;
   }
-
   if(!(page&0x0fff))                       //--------------------------------------> Menu 
   {    
     Zone('A',"menu");

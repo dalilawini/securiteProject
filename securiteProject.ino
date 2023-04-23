@@ -31,11 +31,11 @@ void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t data_len) {
   espnow->recv_cb(mac_addr, data,data_len);
 }
 
-uint8_t device=1;
-char data[]="im Master"; 
+//uint8_t device=1;
+//char data[]="im Master"; 
 
-//uint8_t device=2;
-//char data[]="im Slave"; 
+uint8_t device=2;
+char data[]="im Slave"; 
 
 enum EspNow_code  real=pairingOK;
 bool click_ok=false;
@@ -129,8 +129,8 @@ espnow->begin();
 void loop() {
 
 espnow->process(Menu.ESP_NOW.Mode);
-//espnow->listenner();
-//ir->process();
+espnow->listenner();
+ir->process();
 Display->MeNu();
 
 delay(100);
